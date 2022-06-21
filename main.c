@@ -1,31 +1,41 @@
 #include "minishell.h"
 
-void	reset_root (t_root *start)
+void	free_left (t_node *top)
 {
-	//일단은 파이프 없을때만. 파이프 있으면 root도 오른쪽으로 돌면서 free해야함.
 	t_node	*node;
-	t_root	*root;
 	t_node	*free_node;
 
-	node = start->left;
-	root = start;
-	if (node != NULL)
+	node = top;
+	free (node->right->cmd);
+	free (node->right->arg);
+	free (node->right);
+	node = node->left;
+	while (node != NULL)
 	{
-		free (node->right->cmd);
-		free (node->right->arg);
-		free (node->right);
+		free (node->cmd);
+		free (node->arg);
 		free_node = node;
 		node = node->left;
-		while (node != NULL)
-		{
-			free (node->cmd);
-			free (node->arg);
-			free_node = node;
-			node = node->left;
-		}
 		free (free_node);
-		start->left = NULL;
 	}
+}
+
+void	reset_root (t_root *start)
+{
+	t_root	*root;
+	t_root	*free_root;
+
+	root = start;
+	while (root != NULL)
+	{
+		if (root->left != NULL)
+			free_left (root->left);
+		free_root = root;
+		root = root->right;
+		if (free_root != start)
+			free (free_root);
+	}
+	start->left = NULL;
 }
 
 void	show_prompt (t_root *start)
@@ -87,8 +97,24 @@ int main(int arg, char *argv[], char **envp)
 	// }
 	while (1)
 	{
-		reset_root(start);
+		// reset_root(start);
 		show_prompt (start);
+		t_root	*root;
+		t_node	*node;
+		
+		root = start;
+		while (root != NULL)
+		{
+			node = root->left;
+			while (node != NULL)
+			{
+				printf ("\nredirection cmd %s arg %s\n", node->cmd, node->arg);
+				if (node->right != NULL)
+					printf ("command cmd %s arg %s\n", node->cmd, node->arg);
+				node = node->left;
+			}
+			root = root->right;
+		}
 		//start를 인자로 넘겨서 순회하면서 redirection->명령어->pipe순으로 실행해야됨.
 	}
 	return (0);

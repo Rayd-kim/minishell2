@@ -1,6 +1,7 @@
 NAME = minishell
 
-CC = gcc -Werror -Wall -Wextra
+CC = gcc -Werror -Wall -Wextra 
+# -g -fsanitize=address
 
 FILE = main.c \
 		make_node.c \
