@@ -30,7 +30,7 @@ void	make_arg(char *str, t_node *start)
 	}
 }
 
-void	make_node(char *split, t_node *start)
+void	make_node(char *split, t_root *start)
 {
 	char	**cut;
 	int		cmd = 0;
@@ -41,14 +41,14 @@ void	make_node(char *split, t_node *start)
 	while (cut[i] != NULL)
 	{
 		if (check_redirection(cut[i]) != 0)
-			make_redirection (cut[i], start, cut, &i);
+			make_redirection (cut[i], start->left, cut, &i);
 		else if (cmd == 0)
 		{
-			make_cmd(cut[i], start);
+			make_cmd(cut[i], start->left);
 			cmd++;
 		}
 		else
-			make_arg(cut[i], start);
+			make_arg(cut[i], start->left);
 		i++;
 	}
 	i = -1;

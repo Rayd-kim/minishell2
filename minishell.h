@@ -22,9 +22,16 @@ typedef struct node {
 	struct node *right;
 }		t_node;
 
+typedef struct root {
+	int	in_fd;
+	int	out_fd;
+	struct node	*left;
+	struct root *right;
+}		t_root;
+
 void	change_input (char *s);
 void	make_redirection (char *str, t_node	*start, char **cut, int *index);
 int		check_redirection (char *str);
-void	make_node(char *split, t_node *start);
+void	make_node(char *split, t_root *start);
 
 #endif
