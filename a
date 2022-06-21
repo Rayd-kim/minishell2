@@ -1,0 +1,27 @@
+echo hihi "hihi" | grep hi > a | wc -l
+
+1. echo 는 무조건 프롬프트에 들어온 인자만 출력한다.
+리다이렉션으로 받은 것은 echo명령어에 출력되지 않는다.
+
+저렇식으로 들어오면 먼저 pipe가 있는지 확인.
+pipe가 있으면 pipe 기준으로 split한다.
+
+split[0] = echo hihi "hihi"
+split[1] = grep hi > a
+split[2] = wc -l
+split[3] = NULL
+
+이거를 다시 split해준다.
+cmd1[0] = echo   cmd2[0] = grep cmd3[0] = wc
+cmd1[1] = hihi   cmd2[1] = hi   cmd3[1] = -l
+cmd1[2] = "hihi" cmd2[2] = >    cmd3[2] = NULL
+cmd1[3] = NULL   cmd2[3] = a
+
+이런식으로 담겨진다.
+
+split기준으로 반복문을 돌린다.(split의 다음이 null이 아니면
+파이프로 연결된것이다. 세미콜론은 해석하지 않으니깐 무조건
+이걸로 파이프연결해줄지 선택.)
+
+split인자를 cmd인자로 다시 잘라서 리다이렉션 먼저 확인.
+리다이렉션 잘못되면 명령어도 실행안된다.
