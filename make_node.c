@@ -86,7 +86,7 @@ t_root	*make_cmd_node(t_root *start)
 		while (temp->right != NULL)
 			temp = temp->right;
 		temp->right = pipe;
-		temp = pipe; //temp가 현재 명령어라인의 최상의 root를 가르키도록.
+		temp = temp->right; //temp가 현재 명령어라인의 최상의 root를 가르키도록.
 	}
 	cmd = (t_node *)malloc(sizeof(t_node));
 	if (cmd == 0)
