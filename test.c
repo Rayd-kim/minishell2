@@ -1,66 +1,28 @@
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <dirent.h>
-#include "libft/libft.h"
+#include "minishell.h"
 
-typedef struct node {
-	char	*cmd;
-	char	*arg;
-	int		type;
-	struct node	*left;
-	struct node *right;
-}		t_node;
-
-void	change_input (char *s);
-
-// void	make_node (char **split)
-// {
-// 	t_node	*start;
-
-// 	start = (t_node *)malloc(sizeof(t_node));
-// 	if (start == 0)
-// 		return ;
-// 	int	i = 0;
-// 	while (split[i] != NULL)
-// 	{
-// 		if (split[i] == redirection)
-
-
-// 		else if (split)
-// 	}
-// }
-
-
-int main(void)
+int	check_heredoc(char *name) //here_doc 구현하는 함수. readline으로 shell상에서 받아오면서 체크.
 {
+	int		fd[2];
 	char	*temp;
-	char	**split;
 
-	while (1)
+	pipe (fd);
+	temp = readline (">");
+	// printf ("%zu\n", ft_strlen(temp));
+	while (ft_strncmp (name, temp, ft_strlen(temp)) != 0 || ft_strncmp (name, temp, ft_strlen(name) != 0))
 	{
-	temp = readline("minishell >>");
-	change_input (temp);
-	split = ft_split (temp, (char)255);
-	if (split == NULL)
-	{
-		printf("ERROR\n");
-		return (1);
+		write (fd[1], temp, ft_strlen(temp));
+		write (fd[1], "\n", 1);
+		free (temp);
+		temp = readline (">");
 	}
-	for (int i = 0; split[i] != NULL; i++)
-		printf ("%d번째 %s\n",i, split[i]);
-	
-
-
-
-	int i = -1;
-	while (split[++i] != NULL)
-		free(split[i]);
-	free (split[i]);
-	free (split);
 	free (temp);
-	}
-	return (0);
+	close (fd[1]);
+	return (fd[0]);
+	//우선 pipex에서 한거처럼 비슷하게 구현했는데, 아직 좀더 수정필요할듯.
+}
+
+int	main(void)
+{
+	printf ("%d\n", check_heredoc("hi"));
+	
 }

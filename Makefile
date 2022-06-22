@@ -7,7 +7,8 @@ FILE = main.c \
 		make_node.c \
 		make_redirect.c \
 		change_input.c \
-		make_env.c
+		make_env.c \
+		exe_cmd.c
 
 OBJS = $(FILE:.c=.o)
 

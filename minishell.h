@@ -6,7 +6,11 @@
 # include <readline/history.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <string.h>
 # include <dirent.h>
+# include <fcntl.h>
+# include <sys/wait.h>
+# include <errno.h>
 # include "libft/libft.h"
 
 # define REDI 1
@@ -35,11 +39,12 @@ typedef struct s_list {
 	struct s_list	*next;
 }		t_list;
 
+t_list	*make_env(char **envp);
+t_root	*make_cmd_node(t_root *start);
+t_root	*make_root(int root_in, int root_out);
 void	change_input (char *s);
 void	make_redirection (char *str, t_node	*start, char **cut, int *index);
 int		check_redirection (char *str);
 void	make_node(char *split, t_root *start);
-t_list	*make_env(char **envp);
-t_root	*make_cmd_node(t_root *start);
-t_root	*make_root(int root_in, int root_out);
+void	exe_cmd(t_root *start, t_list *env);
 #endif

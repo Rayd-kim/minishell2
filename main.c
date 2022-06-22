@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	free_left (t_node *top)
+void	free_left (t_node *top) // redirection, 명령어 입력된 node들 비워주는 함수
 {
 	t_node	*node;
 	t_node	*free_node;
@@ -25,7 +25,7 @@ void	free_left (t_node *top)
 	}
 }
 
-void	reset_root (t_root *start)
+void	reset_root (t_root *start) //root기준으로 돌면서 start이외에 다 리셋해주는 함수
 {
 	t_root	*root;
 	t_root	*free_root;
@@ -44,7 +44,7 @@ void	reset_root (t_root *start)
 	start->right = NULL;
 }
 
-void	show_prompt (t_root *start)
+void	show_prompt (t_root *start) //함수가 길어서 자름. readline으로 prompt처럼 보이게 하는용도 이전이랑 비슷.
 {
 	char	*temp;
 	char	**split;
@@ -66,27 +66,6 @@ void	show_prompt (t_root *start)
 	free (temp);
 }
 
-void	exe_cmd(t_root *start)
-{
-	t_node	*node_temp;
-	t_root	*root_temp;
-
-	root_temp = start;
-	while (root_temp != NULL)
-	{
-		node_temp = root_temp->left;
-		while (node_temp != NULL)
-		{
-			//do_redirection(node_temp);
-			node_temp = node_temp->left;
-		}
-		//do_command(root->temp->left->right);
-		root_temp = root_temp->right;
-		//fd값 조정해주기
-	}
-}
-
-
 int main(int arg, char *argv[], char **envp)
 {
 	t_root	*start;
@@ -95,37 +74,33 @@ int main(int arg, char *argv[], char **envp)
 	if (arg > 1 || ft_strncmp (argv[0], "./minishell", ft_strlen(argv[0])) != 0)
 		exit (1);
 	start = make_root (0, 1);
-	env = make_env (envp);
-	// t_list	*temp;
-	// temp = env;
-	// while (temp != NULL)
-	// {
-	// 	printf("%s\n", temp->str);
-	// 	temp = temp->next;
-	// }
+	env = make_env (envp); // 환경변수 받아와서 리스트로 저장. 중간에 export나 unset으로 처리하기 편하기위해서.
 	while (1)
 	{
 		reset_root(start);
 		show_prompt (start);
-		//exe_cmd (start);
+		exe_cmd (start, env); //이제 위에서 만든 트리구조를 가지고 순서대로 순환하면서 명령어, redirection등을 실행.
 
-		// t_root	*root;
-		// t_node	*node;
+		//입력이 잘 되고, reset잘 되는지 확인하는용도. 
+		/*
+		t_root	*root;
+		t_node	*node;
 		
-		// root = start;
-		// while (root != NULL)
-		// {
-		// 	node = root->left;
-		// 	while (node != NULL)
-		// 	{
-		// 		if (node->right != NULL)
-		// 			printf ("\ncommand cmd %s arg %s\n", node->right->cmd, node->right->arg);
-		// 		node = node->left;
-		// 		if (node != NULL)
-		// 			printf ("redirection cmd %s arg %s\n\n", node->cmd, node->arg);
-		// 	}
-		// 	root = root->right;
-	}
+		root = start;
+		while (root != NULL)
+		{
+			node = root->left;
+			while (node != NULL)
+			{
+				if (node->right != NULL)
+					printf ("\ncommand cmd %s arg %s\n", node->right->cmd, node->right->arg);
+				node = node->left;
+				if (node != NULL)
+					printf ("redirection cmd %s arg %s\n\n", node->cmd, node->arg);
+			}
+			root = root->right;
 		}
+		*/
+	}
 	return (0);
 }
