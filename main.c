@@ -35,13 +35,17 @@ void	reset_root (t_root *start) //root기준으로 돌면서 start이외에 다 
 	{
 		if (root->left != NULL)
 			free_left (root->left);
+		if (root->in_fd != 0)
+			close (root->in_fd);
+		if (root->out_fd != 1)
+			close (root->out_fd);
 		free_root = root;
 		root = root->right;
-		if (free_root != start)
-			free (free_root);
+		// if (free_root != start)
+		free (free_root);
 	}
-	start->left = NULL;
-	start->right = NULL;
+	// start->left = NULL;
+	// start->right = NULL;
 }
 
 void	show_prompt (t_root *start) //함수가 길어서 자름. readline으로 prompt처럼 보이게 하는용도 이전이랑 비슷.
@@ -73,14 +77,13 @@ int main(int arg, char *argv[], char **envp)
 
 	if (arg > 1 || ft_strncmp (argv[0], "./minishell", ft_strlen(argv[0])) != 0)
 		exit (1);
-	start = make_root (0, 1);
 	env = make_env (envp); // 환경변수 받아와서 리스트로 저장. 중간에 export나 unset으로 처리하기 편하기위해서.
 	while (1)
 	{
-		reset_root(start);
+		start = make_root (0, 1);
 		show_prompt (start);
 		exe_cmd (start, env); //이제 위에서 만든 트리구조를 가지고 순서대로 순환하면서 명령어, redirection등을 실행.
-
+		reset_root(start);
 		//입력이 잘 되고, reset잘 되는지 확인하는용도. 
 		/*
 		t_root	*root;

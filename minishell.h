@@ -47,4 +47,5 @@ void	make_redirection (char *str, t_node	*start, char **cut, int *index);
 int		check_redirection (char *str);
 void	make_node(char *split, t_root *start);
 void	exe_cmd(t_root *start, t_list *env);
+void	do_redirection(t_root *top);
 #endif

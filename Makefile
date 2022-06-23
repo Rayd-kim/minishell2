@@ -1,6 +1,7 @@
 NAME = minishell
 
-CC = gcc -Werror -Wall -Wextra 
+CC = gcc 
+# -Werror -Wall -Wextra 
 # -g -fsanitize=address
 
 FILE = main.c \
@@ -8,7 +9,8 @@ FILE = main.c \
 		make_redirect.c \
 		change_input.c \
 		make_env.c \
-		exe_cmd.c
+		exe_cmd.c \
+		do_redirection.c
 
 OBJS = $(FILE:.c=.o)
 

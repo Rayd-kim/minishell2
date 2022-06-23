@@ -7,7 +7,6 @@ int	check_heredoc(char *name) //here_doc 구현하는 함수. readline으로 she
 
 	pipe (fd);
 	temp = readline (">");
-	// printf ("%zu\n", ft_strlen(temp));
 	while (ft_strncmp (name, temp, ft_strlen(temp)) != 0 || ft_strncmp (name, temp, ft_strlen(name) != 0))
 	{
 		write (fd[1], temp, ft_strlen(temp));
@@ -23,6 +22,15 @@ int	check_heredoc(char *name) //here_doc 구현하는 함수. readline으로 she
 
 int	main(void)
 {
-	printf ("%d\n", check_heredoc("hi"));
-	
+	int fd = check_heredoc ("hi");
+	// getenv ("PATH");
+	pid_t pid = fork ();
+
+	if (pid == 0)
+	{
+		dup2 (fd, 0);
+		printf ("%d\n", execve("/bin/cat", NULL, NULL));
+	}
+	printf ("end\n");
+	return 0;
 }
