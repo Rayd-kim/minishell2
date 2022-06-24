@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exe_cmd.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/24 18:03:37 by youskim           #+#    #+#             */
+/*   Updated: 2022/06/24 18:03:38 by youskim          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	**make_command(t_node *node)
@@ -27,7 +39,8 @@ void	do_execve(char *path, t_root *top)
 		dup2(top->in_fd, 0);
 		dup2(top->out_fd, 1);
 		command = make_command(top->left);
-		execve(path, command, NULL);
+		if (execve(path, command, NULL) == -1)
+			error_stdin(path);
 	}
 	waitpid(pid, &status, 0);
 }
@@ -51,12 +64,17 @@ void	check_cmd(char *str, t_root *top)
 		path = ft_strjoin (temp, top->left->right->cmd);
 		free (temp);
 		if (access(path, X_OK) == 0)
+		{
 			do_execve (path, top);
-		free (path);
-		free(split[i]);
+			split_free(split);
+			free(path);
+			return ;
+		}
+		free(path);
 		i++;
 	}
-	free(split);
+	split_free(split);
+	do_execve (top->left->right->cmd, top);
 }
 
 void	do_cmd(t_root *top, t_list *env) //외부함수 체크 빌트인은 외부함수 체크전에 확인해서 진행하기.

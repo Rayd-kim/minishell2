@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/24 18:03:46 by youskim           #+#    #+#             */
+/*   Updated: 2022/06/24 18:03:48 by youskim          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	free_left (t_node *top) // redirection, 명령어 입력된 node들 비워주는 함수
@@ -41,11 +53,8 @@ void	reset_root (t_root *start) //root기준으로 돌면서 start이외에 다 
 			close (root->out_fd);
 		free_root = root;
 		root = root->right;
-		// if (free_root != start)
 		free (free_root);
 	}
-	// start->left = NULL;
-	// start->right = NULL;
 }
 
 void	show_prompt (t_root *start, t_list *env) //함수가 길어서 자름. readline으로 prompt처럼 보이게 하는용도 이전이랑 비슷.

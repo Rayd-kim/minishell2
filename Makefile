@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/06/24 18:03:09 by youskim           #+#    #+#              #
+#    Updated: 2022/06/24 18:03:13 by youskim          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
 
 CC = gcc -Werror -Wall -Wextra 
@@ -9,7 +21,8 @@ FILE = main.c \
 		change_input.c \
 		make_env.c \
 		exe_cmd.c \
-		do_redirection.c
+		do_redirection.c \
+		error.c
 
 OBJS = $(FILE:.c=.o)
 

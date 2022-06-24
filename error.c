@@ -1,43 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   make_env.c                                         :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/24 18:03:50 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/24 18:03:51 by youskim          ###   ########.fr       */
+/*   Created: 2022/06/24 18:03:33 by youskim           #+#    #+#             */
+/*   Updated: 2022/06/24 18:03:35 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*make_list(void)
+void	error_stdin(char *str)
 {
-	t_list	*ret;
-	
-	ret = (t_list *)malloc(sizeof(t_list));
-	if (ret == 0)
-		exit (1);
-	ft_memset (ret, 0, sizeof(t_list));
-	return (ret);
+	write (2, "bash: ", 6);
+	write (2, str, ft_strlen(str));
+	write (2, ": ", 2);
+	write (2, strerror(errno), ft_strlen(strerror(errno)));
+	write (2, "\n", 1);
+	exit (errno);
 }
 
-t_list	*make_env(char **envp)
+void	split_free(char **split)
 {
-	t_list	*ret;
-	t_list	*temp;
-	int		i;
+	int	i = 0;
 
-	ret = make_list ();
-	ret->str = envp[0];
-	temp = ret;
-	i = 0;
-	while (envp[++i] != NULL)
+	while (split[i] != NULL)
 	{
-		temp->next = make_list ();
-		temp->next->str = envp[i];
-		temp = temp->next;
+		free(split[i]);
+		i++;
 	}
-	return (ret);
+	free (split);
 }

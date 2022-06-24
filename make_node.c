@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   make_node.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/24 18:03:53 by youskim           #+#    #+#             */
+/*   Updated: 2022/06/24 18:03:54 by youskim          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	make_cmd(char *cut, t_node *start, t_list *env)
@@ -10,7 +22,7 @@ void	make_cmd(char *cut, t_node *start, t_list *env)
 		exit (1);
 	ft_memset (cmd, 0, sizeof(t_node));
 	cmd->type = CMD;
-	str = change_quote(cut, env);
+	str = change_quote(cut, env);  //따옴표 제거하면서 $환경변수 확인
 	cmd->cmd = ft_strdup(str);
 	start->right = cmd;
 	if (str != cut)
@@ -22,7 +34,7 @@ void	make_arg(char *cut, t_node *start, t_list *env)
 	char	*temp_free;
 	char	*str;
 
-	str = change_quote(cut, env);
+	str = change_quote(cut, env); //따옴표 제거하면서 $환경변수 확인
 	if (start->right->arg == NULL)
 		start->right->arg = ft_strdup(str);
 	else

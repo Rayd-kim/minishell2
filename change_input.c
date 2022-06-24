@@ -6,7 +6,7 @@
 /*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 16:49:53 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/18 16:15:43 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/24 18:03:17 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ int	env_len(char *path)
 	int	i;
 
 	i = 0;
-	while (path[i] != ' ' && path[i] != '\"' && path[i] != '\0')
+	while (path[i] != ' ' && path[i] != '\"' && path[i] != '\0' && path[i] != '\'')
 		i++;
 	return (i);
 }
 
-char	*set_env_vari(char *str, t_list *env, char *path)
+char	*set_env_vari(char *str, t_list *env, char *path) //path은 $PATH같은 환경변수에서 $바로 뒤의 주소값
 {
 	char	*free_temp;
 	char	*join;
@@ -49,7 +49,7 @@ char	*set_env_vari(char *str, t_list *env, char *path)
 	while (str[i] != '$')
 		i++;
 	temp = ft_substr(str, 0, i);
-	join = ft_strjoin(temp, env->str);
+	join = ft_strjoin(temp, (env->str + env_len(path) + 1));
 	free(temp);
 	free_temp = join;
 	i += env_len(path) + 1;
@@ -65,8 +65,8 @@ char	*check_env_vari(char *str, t_list *env)
 {
 	t_list	*temp;
 	char	*path;
-	// char	*join;
-	// char	*free_temp;
+	// char	*check;
+	// char	*check_free;
 
 	path = ft_strchr(str, '$');
 	temp = env;
@@ -76,7 +76,20 @@ char	*check_env_vari(char *str, t_list *env)
 		while (temp != NULL)
 		{
 			if (ft_strncmp(path, temp->str, env_len(path)) == 0)
-				return (set_env_vari(str, temp, path));
+				return (check_env_vari(set_env_vari(str, temp, path), env));
+			// {
+			// 	check = set_env_vari(str, temp, path);
+			// 	check_free = check_env_vari(check, env);
+			// 	if (check_free == check)
+			// 		return (check);
+			// 	else
+			// 	{
+			// 		check_env_vari(check, env);
+			// 		free (check_free);
+			// 		free (check);
+			// 	}
+			// }
+				// return (set_env_vari(str, temp, path));
 			temp = temp->next;
 		}
 	}
@@ -135,6 +148,8 @@ char	*change_quote(char *str, t_list *env)
 		}
 		else if (str[i] == '\'')
 			return (remove_quote(str, 1));
+		else if (str[i] == '$')
+			return (check_env_vari(str, env));
 		i++;
 	}
 	return (str);
