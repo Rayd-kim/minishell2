@@ -55,6 +55,7 @@ char	*cmd_redirection(char *str)
 		i++;
 	}
 	ret[k] = '\0';
+	free(str);
 	return (ret);
 }
 

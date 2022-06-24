@@ -29,7 +29,7 @@ void	make_cmd(char *cut, t_node *start, t_list *env)
 		free(str);
 }
 
-void	make_arg(char *cut, t_node *start, t_list *env)
+void	make_arg(char *cut, t_node *start, t_list *env, t_root *root)
 {
 	char	*temp_free;
 	char	*str;
@@ -40,7 +40,7 @@ void	make_arg(char *cut, t_node *start, t_list *env)
 	else
 	{
 		temp_free = start->right->arg;
-		start->right->arg = ft_strjoin (start->right->arg, " ");
+		start->right->arg = ft_strjoin (start->right->arg, root->bond);
 		free (temp_free);
 		temp_free = start->right->arg;
 		start->right->arg = ft_strjoin (start->right->arg, str);
@@ -69,7 +69,7 @@ void	make_node(char *split, t_root *start, t_list *env)
 			cmd++;
 		}
 		else
-			make_arg(cut[i], start->left, env);
+			make_arg(cut[i], start->left, env, start);
 		free (cut[i]);
 		i++;
 	}
@@ -86,6 +86,7 @@ t_root	*make_root(int root_in, int root_out) //root만드는 함수. 인자로 �
 	ft_memset (ret, 0, sizeof(t_root));
 	ret->in_fd = root_in;
 	ret->out_fd = root_out;
+	ret->bond[0] = (char)255;
 	return (ret);
 }
 

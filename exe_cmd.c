@@ -12,19 +12,29 @@
 
 #include "minishell.h"
 
-char	**make_command(t_node *node)
+char	**make_command(t_node *node, t_root *top)
 {
 	char	**command;
 	char	*temp;
 	char	*free_temp;
 
-	temp = ft_strjoin(node->right->cmd, " ");
+	temp = ft_strjoin(node->right->cmd, top->bond);
 	free_temp = temp;
 	temp = ft_strjoin(free_temp, node->right->arg);
 	free(free_temp);
-	command = ft_split(temp, ' ');
+	command = ft_split(temp, (char)255);
 	free(temp);
 	return (command);
+}
+
+int	pipe_check(t_root *top)
+{
+	if (top->right != NULL)
+	{
+		if (top->right->in_fd == 0)
+			return (0);
+	}
+	return (1);
 }
 
 void	do_execve(char *path, t_root *top)
@@ -32,15 +42,33 @@ void	do_execve(char *path, t_root *top)
 	int		status;
 	pid_t	pid;
 	char	**command;
+	int		fd[2];
 
+	pipe(fd);
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(top->in_fd, 0);
-		dup2(top->out_fd, 1);
-		command = make_command(top->left);
+		if (top->out_fd == 1 && pipe_check(top) == 0)
+		{
+			dup2(fd[1], 1);
+			dup2(top->in_fd, 0);
+			close (top->in_fd);
+			close (fd[0]);
+			top->right->in_fd = fd[0];
+		}
+		else
+		{	
+			dup2(top->in_fd, 0);
+			dup2(top->out_fd, 1);
+		}
+		command = make_command(top->left, top);
 		if (execve(path, command, NULL) == -1)
 			error_stdin(path);
+	}
+	if (pipe_check(top) == 0)
+	{
+		top->right->in_fd = fd[0];
+		close (fd[1]);
 	}
 	waitpid(pid, &status, 0);
 }

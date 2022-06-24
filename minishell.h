@@ -41,6 +41,7 @@ typedef struct s_node {
 typedef struct s_root {
 	int				in_fd;
 	int				out_fd;
+	char			bond[2];
 	struct s_node	*left;
 	struct s_root	*right;
 }		t_root;

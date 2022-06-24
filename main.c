@@ -79,6 +79,20 @@ void	show_prompt (t_root *start, t_list *env) //함수가 길어서 자름. read
 	free (temp);
 }
 
+// void	pid_check(void)
+// {
+// 	int	now_pid;
+// 	int	status;
+
+// 	now_pid = 0;
+// 	while (1)
+// 	{
+// 		now_pid = waitpid(0, &status, 0);
+// 		if (now_pid == -1)
+// 			exit (1);
+// 	}
+// }
+
 int main(int arg, char *argv[], char **envp)
 {
 	t_root	*start;
@@ -92,6 +106,7 @@ int main(int arg, char *argv[], char **envp)
 		start = make_root (0, 1);
 		show_prompt (start, env);
 		exe_cmd (start, env); //이제 위에서 만든 트리구조를 가지고 순서대로 순환하면서 명령어, redirection등을 실행.
+		// pid_check();
 		reset_root(start);
 		//입력이 잘 되고, reset잘 되는지 확인하는용도. 
 		/*

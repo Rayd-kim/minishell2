@@ -60,13 +60,39 @@ char	*set_env_vari(char *str, t_list *env, char *path) //path은 $PATH같은 환
 	return (join);
 }
 
+char	*set_env_empty(char *str, char *path)
+{
+	char	*free_temp;
+	char	*join;
+	char	*temp;
+	int		i;
+
+	i = 0;
+	while (str[i] != '$')
+		i++;
+	temp = ft_substr(str, 0, i);
+	i += env_len(path) + 1;
+	free_temp = ft_substr(str, i, ft_strlen(&str[i]));
+	join = ft_strjoin(temp, free_temp);
+	free(free_temp);
+	free(temp);
+	return (join);
+}
+
+int	path_len(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '=')
+		i++;
+	return (i);
+}
 
 char	*check_env_vari(char *str, t_list *env)
 {
 	t_list	*temp;
 	char	*path;
-	// char	*check;
-	// char	*check_free;
 
 	path = ft_strchr(str, '$');
 	temp = env;
@@ -75,23 +101,11 @@ char	*check_env_vari(char *str, t_list *env)
 		path = path + 1;
 		while (temp != NULL)
 		{
-			if (ft_strncmp(path, temp->str, env_len(path)) == 0)
+			if (ft_strncmp(path, temp->str, path_len(temp->str)) == 0)
 				return (check_env_vari(set_env_vari(str, temp, path), env));
-			// {
-			// 	check = set_env_vari(str, temp, path);
-			// 	check_free = check_env_vari(check, env);
-			// 	if (check_free == check)
-			// 		return (check);
-			// 	else
-			// 	{
-			// 		check_env_vari(check, env);
-			// 		free (check_free);
-			// 		free (check);
-			// 	}
-			// }
-				// return (set_env_vari(str, temp, path));
 			temp = temp->next;
 		}
+		return (set_env_empty(str, path));
 	}
 	return (str);
 }
