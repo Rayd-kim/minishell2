@@ -37,10 +37,13 @@ void	check_cmd(char *str, t_root *top)
 	char	**split;
 	char	*temp;
 	char	*path;
+	char	*copy;
 	int		i;
 
 	i = 0;
-	split = ft_split(str, ':');
+	copy = ft_strdup(ft_strchr(str, '/'));
+	split = ft_split(copy, ':');
+	free (copy);
 	while (split[i] != NULL)
 	{
 		path = ft_strjoin (split[i], "/");
@@ -49,8 +52,11 @@ void	check_cmd(char *str, t_root *top)
 		free (temp);
 		if (access(path, X_OK) == 0)
 			do_execve (path, top);
+		free (path);
+		free(split[i]);
 		i++;
 	}
+	free(split);
 }
 
 void	do_cmd(t_root *top, t_list *env) //외부함수 체크 빌트인은 외부함수 체크전에 확인해서 진행하기.

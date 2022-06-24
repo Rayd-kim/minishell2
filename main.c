@@ -48,7 +48,7 @@ void	reset_root (t_root *start) //root기준으로 돌면서 start이외에 다 
 	// start->right = NULL;
 }
 
-void	show_prompt (t_root *start) //함수가 길어서 자름. readline으로 prompt처럼 보이게 하는용도 이전이랑 비슷.
+void	show_prompt (t_root *start, t_list *env) //함수가 길어서 자름. readline으로 prompt처럼 보이게 하는용도 이전이랑 비슷.
 {
 	char	*temp;
 	char	**split;
@@ -62,7 +62,7 @@ void	show_prompt (t_root *start) //함수가 길어서 자름. readline으로 pr
 	while (split[i] != NULL)
 	{
 		change_input(split[i]);
-		make_node(split[i], make_cmd_node(start));
+		make_node(split[i], make_cmd_node(start), env);
 		free (split[i]);
 		i++;
 	}
@@ -81,7 +81,7 @@ int main(int arg, char *argv[], char **envp)
 	while (1)
 	{
 		start = make_root (0, 1);
-		show_prompt (start);
+		show_prompt (start, env);
 		exe_cmd (start, env); //이제 위에서 만든 트리구조를 가지고 순서대로 순환하면서 명령어, redirection등을 실행.
 		reset_root(start);
 		//입력이 잘 되고, reset잘 되는지 확인하는용도. 

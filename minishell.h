@@ -35,7 +35,6 @@ typedef struct s_root {
 
 typedef struct s_list {
 	char	*str;
-	struct s_list	*prev;
 	struct s_list	*next;
 }		t_list;
 
@@ -45,7 +44,8 @@ t_root	*make_root(int root_in, int root_out);
 void	change_input (char *s);
 void	make_redirection (char *str, t_node	*start, char **cut, int *index);
 int		check_redirection (char *str);
-void	make_node(char *split, t_root *start);
+void	make_node(char *split, t_root *start, t_list *env);
 void	exe_cmd(t_root *start, t_list *env);
 void	do_redirection(t_root *top);
+char	*change_quote(char *str, t_list *env);
 #endif

@@ -1,22 +1,28 @@
 #include "minishell.h"
 
-void	make_cmd(char *str, t_node *start)
+void	make_cmd(char *cut, t_node *start, t_list *env)
 {
 	t_node	*cmd;
+	char	*str;
 
 	cmd = (t_node *)malloc(sizeof(t_node));
 	if (cmd == 0)
 		exit (1);
 	ft_memset (cmd, 0, sizeof(t_node));
 	cmd->type = CMD;
+	str = change_quote(cut, env);
 	cmd->cmd = ft_strdup(str);
 	start->right = cmd;
+	if (str != cut)
+		free(str);
 }
 
-void	make_arg(char *str, t_node *start)
+void	make_arg(char *cut, t_node *start, t_list *env)
 {
 	char	*temp_free;
+	char	*str;
 
+	str = change_quote(cut, env);
 	if (start->right->arg == NULL)
 		start->right->arg = ft_strdup(str);
 	else
@@ -28,9 +34,11 @@ void	make_arg(char *str, t_node *start)
 		start->right->arg = ft_strjoin (start->right->arg, str);
 		free (temp_free);
 	}
+	if (str != cut)
+		free(str);
 }
 
-void	make_node(char *split, t_root *start)
+void	make_node(char *split, t_root *start, t_list *env)
 {
 	char	**cut;
 	int		cmd;
@@ -45,16 +53,14 @@ void	make_node(char *split, t_root *start)
 			make_redirection (cut[i], start->left, cut, &i);
 		else if (cmd == 0)
 		{
-			make_cmd(cut[i], start->left);
+			make_cmd(cut[i], start->left, env);
 			cmd++;
 		}
 		else
-			make_arg(cut[i], start->left);
+			make_arg(cut[i], start->left, env);
+		free (cut[i]);
 		i++;
 	}
-	i = -1;
-	while (cut[++i] != NULL)
-		free (cut[i]);
 	free (cut);
 }
 
