@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   do_redirection.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:18 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/24 18:03:21 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/26 19:38:11 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ int	check_heredoc(char *name) //here_doc 구현하는 함수. readline으로 she
 	free (temp);
 	close (fd[1]);
 	return (fd[0]);
-	//우선 pipex에서 한거처럼 비슷하게 구현했는데, 아직 좀더 수정필요할듯.
 }
 
 int	open_file(char *file)

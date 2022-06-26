@@ -3,17 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+         #
+#    By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/24 18:03:09 by youskim           #+#    #+#              #
-#    Updated: 2022/06/24 18:03:13 by youskim          ###   ########.fr        #
+#    Updated: 2022/06/26 19:42:54 by youskim          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CC = gcc -Werror -Wall -Wextra 
-# -g -fsanitize=address
+CC = gcc -Werror -Wall -Wextra -g -fsanitize=address
 
 FILE = main.c \
 		make_node.c \

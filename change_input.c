@@ -6,7 +6,7 @@
 /*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 16:49:53 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/24 18:03:17 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/26 19:31:04 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,15 +143,21 @@ char	*remove_quote(char *str, int type)
 char	*check_env(char *str, t_list *env)
 {
 	int		quote_single;
+	int		quote_double;
 	int		i;
 
 	i = 0;
 	quote_single = 0;
+	quote_double = 0;
 	while(str[i])
 	{
-		if (str[i] == '\'')
+		if (str[i] == '\'' && quote_double % 2 == 0)
 			quote_single++;
-		else if (str[i] == '$' && quote_single % 2 == 0)		
+		if (str[i] == '\"')
+			quote_double++;
+		else if (str[i] == '$' && quote_single % 2 == 0)
+			return (check_env_vari(str, env));
+		else if (str[i] == '$' && quote_double % 2 != 0 && quote_single % 2 == 0)
 			return (check_env_vari(str, env));
 		i++;
 	}
@@ -173,10 +179,7 @@ char	*change_quote(char *str, t_list *env)
 			free_temp = temp;
 			temp = check_env(temp, env);
 			if (free_temp == temp)
-			{
-				// free(free_temp);
 				break ;
-			}
 			free(free_temp);
 		}
 	}
@@ -186,10 +189,10 @@ char	*change_quote(char *str, t_list *env)
 		if (str[i] == '\"')
 		{
 			ret = remove_quote(temp, 2);
-			// free (free_temp);
+			if (ret != temp) 
+				free (free_temp);
 			return (ret);
 		}
-			// return (remove_quote(temp, 2));
 		else if (str[i] == '\'')
 			return (remove_quote(temp, 1));
 		i++;

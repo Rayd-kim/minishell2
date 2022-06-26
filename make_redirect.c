@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   make_redirect.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:55 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/24 18:03:57 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/26 19:45:15 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	*cmd_redirection(char *str)
 		i++;
 	}
 	ret[k] = '\0';
-	free(str);
+	// free(str);
 	return (ret);
 }
 

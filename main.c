@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:46 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/24 18:03:48 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/26 19:14:48 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	show_prompt (t_root *start, t_list *env) //함수가 길어서 자름. read
 	int		i;
 
 	temp = readline("minishell >>");
+	add_history (temp);
 	split = ft_split (temp, '|');
 	if (split == NULL)
 		exit (1);

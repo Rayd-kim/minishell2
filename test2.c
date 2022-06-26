@@ -1,6 +1,14 @@
-#include <stdio.h>
+#include "minishell.h"
 
-int main(int argc, char *argv[], char **env)
+
+int main(void)
 {
-	
+	char	*temp;
+
+	while (1)
+	{
+	temp = readline("prompt>>");
+	add_history(temp);
+	free (temp);
+	}
 }
