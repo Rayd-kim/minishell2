@@ -6,7 +6,7 @@
 /*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:55 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/26 19:45:15 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/27 19:11:42 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,25 @@
 int	check_redirection(char *str)
 {
 	int	i;
+	int	s;
+	int	d;
 
 	i = 0;
+	s = 0;
+	d = 0;
 	while (str[i] != '\0')
 	{
-		if (ft_strncmp (&str[i], ">>", 2) == 0)
+		if (str[i] == '\'')
+			s++;
+		else if (str[i] == '\"')
+			d++;
+		else if (ft_strncmp (&str[i], ">>", 2) == 0 && s % 2 == 0 && d % 2 == 0)
 			return (2);
-		else if (ft_strncmp (&str[i], "<<", 2) == 0)
+		else if (ft_strncmp (&str[i], "<<", 2) == 0 && s % 2 == 0 && d % 2 == 0)
 			return (2);
-		else if (ft_strncmp (&str[i], ">", 1) == 0)
+		else if (ft_strncmp (&str[i], ">", 1) == 0 && s % 2 == 0 && d % 2 == 0)
 			return (1);
-		else if (ft_strncmp (&str[i], "<", 1) == 0)
+		else if (ft_strncmp (&str[i], "<", 1) == 0 && s % 2 == 0 && d % 2 == 0)
 			return (1);
 		i++;
 	}
@@ -55,7 +63,6 @@ char	*cmd_redirection(char *str)
 		i++;
 	}
 	ret[k] = '\0';
-	// free(str);
 	return (ret);
 }
 
@@ -97,7 +104,6 @@ void	make_redirection(char *str, t_node	*start, char **cut, int *index)
 	temp = start;
 	while (temp->left != NULL)
 		temp = temp->left;
-	redirect->type = REDI;
 	redirect->cmd = cmd_redirection (str);
 	redirect->arg = arg_redirection (str, cut, index);
 	temp->left = redirect;

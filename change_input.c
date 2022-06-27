@@ -6,13 +6,13 @@
 /*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/17 16:49:53 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/26 19:31:04 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/27 19:08:49 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	change_input(char *s)
+void	change_space(char *s)
 {
 	int	double_q = 0;
 	int	single_q = 0;
@@ -25,6 +25,22 @@ void	change_input(char *s)
 			single_q++;
 		else if (s[i] == ' ' && double_q % 2 == 0 && single_q % 2 == 0)
 			s[i] = (char)255;
+	}
+}
+
+void	change_pipe(char *s)
+{
+	int	double_q = 0;
+	int	single_q = 0;
+
+	for (int i = 0; s[i] != '\0'; i++)
+	{
+		if (s[i] == '\"')
+			double_q++;
+		else if (s[i] == '\'')
+			single_q++;
+		else if (s[i] == '|' && double_q % 2 == 0 && single_q % 2 == 0)
+			s[i] = (char)254;
 	}
 }
 
@@ -171,6 +187,7 @@ char	*change_quote(char *str, t_list *env)
 	char	*free_temp;
 	char	*ret;
 
+	free_temp = NULL;
 	temp = check_env(str, env);
 	if (temp != str)
 	{
@@ -189,7 +206,7 @@ char	*change_quote(char *str, t_list *env)
 		if (str[i] == '\"')
 		{
 			ret = remove_quote(temp, 2);
-			if (ret != temp) 
+			if (ret != temp && free_temp != NULL)
 				free (free_temp);
 			return (ret);
 		}

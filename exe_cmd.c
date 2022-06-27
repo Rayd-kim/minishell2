@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exe_cmd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:37 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/24 18:03:38 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/27 21:57:33 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int status;
 
 char	**make_command(t_node *node, t_root *top)
 {
@@ -39,7 +41,6 @@ int	pipe_check(t_root *top)
 
 void	do_execve(char *path, t_root *top)
 {
-	int		status;
 	pid_t	pid;
 	char	**command;
 	int		fd[2];
@@ -71,6 +72,7 @@ void	do_execve(char *path, t_root *top)
 		close (fd[1]);
 	}
 	waitpid(pid, &status, 0);
+	status = status >> 8;
 }
 
 void	check_cmd(char *str, t_root *top)
@@ -85,7 +87,7 @@ void	check_cmd(char *str, t_root *top)
 	copy = ft_strdup(ft_strchr(str, '/'));
 	split = ft_split(copy, ':');
 	free (copy);
-	while (split[i] != NULL)
+	while (split[i] != NULL && top->left->right->cmd[0] != '/')
 	{
 		path = ft_strjoin (split[i], "/");
 		temp = path;
@@ -131,10 +133,8 @@ void	exe_cmd(t_root *start, t_list *env)
 	{
 		if (root_temp->left != NULL)
 		{
-			do_redirection(root_temp);
-		//이 밑으로는 아직 구현중.
-
-			do_cmd(root_temp, env);
+			if (do_redirection(root_temp) == 0)
+				do_cmd(root_temp, env);
 		}
 			root_temp = root_temp->right;
 		//fd값 조정해주기

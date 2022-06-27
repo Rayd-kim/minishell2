@@ -6,7 +6,7 @@
 /*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:53 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/26 19:47:21 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/27 19:17:09 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	make_cmd(char *cut, t_node *start, t_list *env)
 	if (cmd == 0)
 		exit (1);
 	ft_memset (cmd, 0, sizeof(t_node));
-	cmd->type = CMD;
 	str = change_quote(cut, env);  //따옴표 제거하면서 $환경변수 확인
 	cmd->cmd = ft_strdup(str);
 	start->right = cmd;

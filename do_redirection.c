@@ -6,12 +6,12 @@
 /*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:18 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/26 19:38:11 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/27 21:33:18 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+int	status;
 int	open_redirection(char *file_name, int check)
 {
 	int	fd;
@@ -61,12 +61,18 @@ int	open_file(char *file)
 	{
 		write (2, strerror(errno), ft_strlen(strerror(errno)));
 		write (2, "\n", 1);
+		status = errno;
 	}
 	return (fd);
 }
 
-void	set_redirection(t_root *top, int fd, int in_or_out)
+void	set_redirection(t_root *top, int fd, int in_or_out, int *check)
 {
+	if (fd < 0)
+	{
+		*check = 1;
+		return ;
+	}
 	if (in_or_out == 0)//in 일 때
 	{
 		if (top->in_fd != 0)
@@ -81,21 +87,26 @@ void	set_redirection(t_root *top, int fd, int in_or_out)
 	}
 }
 
-void	do_redirection(t_root *top)
+int	do_redirection(t_root *top)
 {
 	t_node	*temp;
+	int		check;
 
+	check = 0;
 	temp = top->left->left;
 	while (temp != NULL)
 	{
 		if (ft_strncmp (temp->cmd, ">>", 2) == 0)
-			set_redirection(top, open_redirection(temp->arg, 2), 1);
+			set_redirection(top, open_redirection(temp->arg, 2), 1, &check);
 		else if (ft_strncmp (temp->cmd, "<<", 2) == 0)
-			set_redirection(top, check_heredoc (temp->arg), 0);
+			set_redirection(top, check_heredoc (temp->arg), 0, &check);
 		else if (ft_strncmp (temp->cmd, ">", 1) == 0)
-			set_redirection(top, open_redirection(temp->arg, 1), 1);
+			set_redirection(top, open_redirection(temp->arg, 1), 1, &check);
 		else
-			set_redirection(top, open_file (temp->arg), 0);
+			set_redirection(top, open_file (temp->arg), 0, &check);
+		if (check != 0)
+			return (1);
 		temp = temp->left;
 	}
+	return (0);
 }
