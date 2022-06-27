@@ -8,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Sun Jun 26 19:43:20 2022
+# Make data base, printed on Mon Jun 27 14:16:24 2022
 
 # Variables
 
@@ -35,7 +35,6 @@ _ = /usr/bin/make
 # makefile (from `Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # environment
- 
 VSCODE_VERBOSE_LOGGING = true
 # environment
 __CFBundleIdentifier = com.microsoft.VSCode
@@ -59,11 +58,11 @@ SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.0XWar5YplY/Listeners
 %F = $(notdir $%)
 # environment
 VSCODE_PIPE_LOGGING = true
-# makefile (from `Makefile', line 26)
+# makefile (from `Makefile', line 27)
 OBJS = $(FILE:.c=.o)
 # environment
 PWD = /Users/kimyousung/42cursus/minishell2
-# makefile (from `Makefile', line 17)
+# makefile (from `Makefile', line 18)
 FILE = main.c make_node.c make_redirect.c change_input.c make_env.c exe_cmd.c do_redirection.c error.c
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = undefined
@@ -94,7 +93,7 @@ MAKECMDGOALS := all
 # environment
 SHLVL = 1
 # makefile (from `Makefile', line 15)
-CC = gcc -Werror -Wall -Wextra -g -fsanitize=address
+CC = gcc -Werror -Wall -Wextra 
 # default
 MAKE_VERSION := 3.81
 # environment
@@ -121,6 +120,7 @@ VSCODE_IPC_HOOK = /Users/kimyousung/Library/Application Support/Code/1.68.1-main
 MAKEFLAGS = Rrqp
 # environment
 MFLAGS = -Rrqp
+ 
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
@@ -171,7 +171,7 @@ VSCODE_PID = 72210
 # Implicit Rules
 
 %.o: %.c
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	$(CC) -c $< -o $@
 	
 
@@ -197,7 +197,7 @@ all: minishell
 # Not a target:
 main.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-26 19:14:48
+#  Last modified 2022-06-27 14:15:12
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -221,7 +221,7 @@ do_redirection.c:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-26 19:42:54
+#  Last modified 2022-06-27 14:16:05
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -239,23 +239,23 @@ change_input.c:
 error.o: error.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `error'
-#  Last modified 2022-06-26 19:42:56
+#  Last modified 2022-06-27 14:16:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	$(CC) -c $< -o $@
 	
 
 minishell: main.o make_node.o make_redirect.o change_input.o make_env.o exe_cmd.o do_redirection.o error.o
 #  Implicit rule search has not been done.
-#  Last modified 2022-06-26 19:42:57
+#  Last modified 2022-06-27 14:16:10
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-#  commands to execute (from `Makefile', line 31):
+#  commands to execute (from `Makefile', line 32):
 	@$(MAKE) -C ./libft all
 	$(CC) $(OBJS) -lreadline -L./libft -lft -o $(NAME)
 	
@@ -265,7 +265,7 @@ fclean:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 42):
+#  commands to execute (from `Makefile', line 43):
 	make clean
 	@$(MAKE) -C ./libft fclean
 	rm -rf $(NAME)
@@ -274,48 +274,48 @@ fclean:
 make_redirect.o: make_redirect.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `make_redirect'
-#  Last modified 2022-06-26 19:42:56
+#  Last modified 2022-06-27 14:16:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	$(CC) -c $< -o $@
 	
 
 make_env.o: make_env.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `make_env'
-#  Last modified 2022-06-26 19:42:56
+#  Last modified 2022-06-27 14:16:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	$(CC) -c $< -o $@
 	
 
 make_node.o: make_node.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `make_node'
-#  Last modified 2022-06-26 19:42:56
+#  Last modified 2022-06-27 14:16:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	$(CC) -c $< -o $@
 	
 
 exe_cmd.o: exe_cmd.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `exe_cmd'
-#  Last modified 2022-06-26 19:42:56
+#  Last modified 2022-06-27 14:16:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	$(CC) -c $< -o $@
 	
 
@@ -330,7 +330,7 @@ re:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 47):
+#  commands to execute (from `Makefile', line 48):
 	make fclean
 	make all
 	
@@ -340,7 +340,7 @@ clean:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 38):
+#  commands to execute (from `Makefile', line 39):
 	@$(MAKE) -C ./libft clean
 	rm -rf $(OBJS)
 	
@@ -348,7 +348,6 @@ clean:
 # Not a target:
 error.c:
 #  Implicit rule search has been done.
- 
 #  Last modified 2022-06-25 19:19:54
 #  File has been updated.
 #  Successfully updated.
@@ -358,19 +357,19 @@ error.c:
 main.o: main.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `main'
-#  Last modified 2022-06-26 19:42:56
+#  Last modified 2022-06-27 14:16:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	$(CC) -c $< -o $@
 	
 
 # Not a target:
 make_redirect.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-26 19:40:49
+#  Last modified 2022-06-26 19:45:15
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -388,7 +387,7 @@ make_env.c:
 # Not a target:
 make_node.c:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-25 19:19:54
+#  Last modified 2022-06-26 19:47:21
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -406,24 +405,24 @@ exe_cmd.c:
 do_redirection.o: do_redirection.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `do_redirection'
-#  Last modified 2022-06-26 19:42:56
+#  Last modified 2022-06-27 14:16:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	$(CC) -c $< -o $@
 	
 
 change_input.o: change_input.c
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `change_input'
-#  Last modified 2022-06-26 19:42:56
+#  Last modified 2022-06-27 14:16:09
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	$(CC) -c $< -o $@
 	
 
@@ -440,6 +439,7 @@ change_input.o: change_input.c
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Sun Jun 26 19:43:20 2022
+ 
+# Finished Make data base on Mon Jun 27 14:16:24 2022
 
  
