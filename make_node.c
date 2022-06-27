@@ -6,7 +6,7 @@
 /*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:53 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/27 19:17:09 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/27 23:29:57 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,9 @@ void	make_node(char *split, t_root *start, t_list *env)
 		}
 		else
 			make_arg(cut[i], start->left, env, start);
-		free (cut[i]);
 		i++;
 	}
-	free (cut);
+	split_free (cut);
 }
 
 t_root	*make_root(int root_in, int root_out) //root만드는 함수. 인자로 들어온 정수를 stdin, stdout 로 각각 저장.
