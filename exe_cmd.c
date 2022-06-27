@@ -6,13 +6,11 @@
 /*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:37 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/27 21:57:33 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/27 23:06:37 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int status;
 
 char	**make_command(t_node *node, t_root *top)
 {
@@ -53,13 +51,16 @@ void	do_execve(char *path, t_root *top)
 		{
 			dup2(fd[1], 1);
 			dup2(top->in_fd, 0);
-			close (top->in_fd);
+			if (top->in_fd != 0)
+				close (top->in_fd);
 			close (fd[0]);
 			top->right->in_fd = fd[0];
 		}
 		else
 		{	
 			dup2(top->in_fd, 0);
+			if (top->in_fd != 0)
+				close (top->in_fd);
 			dup2(top->out_fd, 1);
 		}
 		command = make_command(top->left, top);
@@ -69,10 +70,14 @@ void	do_execve(char *path, t_root *top)
 	if (pipe_check(top) == 0)
 	{
 		top->right->in_fd = fd[0];
+		if (top->in_fd != 0)
+			close (top->in_fd);
 		close (fd[1]);
 	}
-	waitpid(pid, &status, 0);
-	status = status >> 8;
+	if (top->in_fd != 0)
+		close (top->in_fd);
+	close (fd[1]);
+	top->pid = pid;
 }
 
 void	check_cmd(char *str, t_root *top)
@@ -126,6 +131,7 @@ void	exe_cmd(t_root *start, t_list *env)
 {
 	t_root	*root_temp;
 	t_list	*temp;
+	int		fd[2];
 
 	temp = env;
 	root_temp = start;
@@ -135,6 +141,17 @@ void	exe_cmd(t_root *start, t_list *env)
 		{
 			if (do_redirection(root_temp) == 0)
 				do_cmd(root_temp, env);
+			else
+			{
+				if (root_temp->right != NULL && pipe_check(root_temp) == 0)
+				{
+					pipe(fd);
+					close (fd[1]);
+					root_temp->right->in_fd = fd[0];
+					if (root_temp->in_fd != 0)
+						close (root_temp->in_fd);
+				}
+			}
 		}
 			root_temp = root_temp->right;
 		//fd값 조정해주기

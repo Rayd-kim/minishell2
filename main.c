@@ -6,7 +6,7 @@
 /*   By: youskim <youskim@student.42seoul.kr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 18:03:46 by youskim           #+#    #+#             */
-/*   Updated: 2022/06/27 21:58:24 by youskim          ###   ########.fr       */
+/*   Updated: 2022/06/27 23:07:35 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,17 +88,23 @@ int	show_prompt (t_root *start, t_list *env) //함수가 길어서 자름. readl
 	return (0);
 }
 
-void	pid_check(void)
+void	pid_check(t_root *start)
 {
 	int	now_pid;
-	int	status;
+	int	check;
+	t_root	*temp;
 
 	now_pid = 0;
+	temp = start;
+	while (temp->right != NULL)
+		temp = temp->right;
 	while (1)
 	{
-		now_pid = waitpid(0, &status, 0);
+		now_pid = waitpid(0, &check, 0);
 		if (now_pid == -1)
 			break ;
+		if (now_pid == temp->pid)
+			status = check >> 8;
 	}
 }
 
@@ -114,8 +120,10 @@ int main(int arg, char *argv[], char **envp)
 	{
 		start = make_root (0, 1);
 		if (show_prompt (start, env) == 0)
+		{
 			exe_cmd (start, env); //이제 위에서 만든 트리구조를 가지고 순서대로 순환하면서 명령어, redirection등을 실행.
-		// pid_check();
+			pid_check(start);
+		}
 		printf ("%d\n", status);
 		reset_root(start);
 	}
