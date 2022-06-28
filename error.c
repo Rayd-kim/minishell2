@@ -11,22 +11,37 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-int	status;
-void	error_stdin(char *str)
+
+int	g_status;
+
+void	error_stdin(char *str, int check)
 {
-	write (2, "bash: ", 6);
-	write (2, str, ft_strlen(str));
-	write (2, ": ", 2);
-	write (2, strerror(errno), ft_strlen(strerror(errno)));
-	write (2, "\n", 1);
-	status = errno;
-	exit (errno);
+	if (check == 1)
+	{
+		write (2, "bash: ", 6);
+		write (2, str, ft_strlen(str));
+		write (2, ": ", 2);
+		write (2, strerror(errno), ft_strlen(strerror(errno)));
+		write (2, "\n", 1);
+		g_status = 127;
+		exit (127);
+	}
+	else
+	{
+		write (2, "bash: ", 6);
+		write (2, str, ft_strlen(str));
+		write (2, ": ", 2);
+		write (2, "command not found\n", 18);
+		g_status = 127;
+		exit (127);
+	}
 }
 
 void	split_free(char **split)
 {
-	int	i = 0;
+	int	i;
 
+	i = 0;
 	while (split[i] != NULL)
 	{
 		free(split[i]);
@@ -59,4 +74,28 @@ int	check_quote(char *str)
 		write (2, "Unclosed quotes\n", 16);
 		return (1);
 	}
+}
+
+int	check_pipe_close(char *str)
+{
+	int	i;
+	int	arg;
+
+	i = 0;
+	arg = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == '|')
+			arg = 0;
+		else if (str[i] != ' ')
+			arg++;
+		i++;
+	}
+	if (arg == 0)
+	{
+		write (2, "Unclosed pipe\n", 14);
+		free (str);
+		return (1);
+	}
+	return (0);
 }

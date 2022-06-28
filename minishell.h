@@ -49,16 +49,17 @@ typedef struct s_list {
 t_list	*make_env(char **envp);
 t_root	*make_cmd_node(t_root *start);
 t_root	*make_root(int root_in, int root_out);
-void	change_space (char *s);
+void	change_space(char *s);
 void	change_pipe(char *s);
-void	make_redirection (char *str, t_node	*start, char **cut, int *index);
-int		check_redirection (char *str);
+void	make_redirection(char *str, t_node	*start, char **cut, int *index);
+int		check_redirection(char *str);
 void	make_node(char *split, t_root *start, t_list *env);
 void	exe_cmd(t_root *start, t_list *env);
 int		do_redirection(t_root *top);
 char	*change_quote(char *str, t_list *env);
 char	*check_env_vari(char *str, t_list *env);
-void	error_stdin(char *str);
+void	error_stdin(char *str, int check);
 void	split_free(char **split);
 int		check_quote(char *str);
+int		check_pipe_close(char *str);
 #endif

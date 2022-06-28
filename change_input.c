@@ -12,12 +12,18 @@
 
 #include "minishell.h"
 
+int	g_status;
+
 void	change_space(char *s)
 {
-	int	double_q = 0;
-	int	single_q = 0;
+	int	double_q;
+	int	single_q;
+	int	i;
 
-	for (int i = 0; s[i] != '\0'; i++)
+	double_q = 0;
+	single_q = 0;
+	i = 0;
+	while (s[i] != '\0')
 	{
 		if (s[i] == '\"')
 			double_q++;
@@ -25,15 +31,20 @@ void	change_space(char *s)
 			single_q++;
 		else if (s[i] == ' ' && double_q % 2 == 0 && single_q % 2 == 0)
 			s[i] = (char)255;
+		i++;
 	}
 }
 
 void	change_pipe(char *s)
 {
-	int	double_q = 0;
-	int	single_q = 0;
+	int	double_q;
+	int	single_q;
+	int	i;
 
-	for (int i = 0; s[i] != '\0'; i++)
+	double_q = 0;
+	single_q = 0;
+	i = 0;
+	while (s[i] != '\0')
 	{
 		if (s[i] == '\"')
 			double_q++;
@@ -41,6 +52,7 @@ void	change_pipe(char *s)
 			single_q++;
 		else if (s[i] == '|' && double_q % 2 == 0 && single_q % 2 == 0)
 			s[i] = (char)254;
+		i++;
 	}
 }
 
@@ -49,12 +61,13 @@ int	env_len(char *path)
 	int	i;
 
 	i = 0;
-	while (path[i] != ' ' && path[i] != '\"' && path[i] != '\0' && path[i] != '\'')
+	while (path[i] != ' ' && path[i] != '\"' && path[i] != '\0' \
+			&& path[i] != '\'' && path[i] != '?')
 		i++;
 	return (i);
 }
 
-char	*set_env_vari(char *str, t_list *env, char *path) //path은 $PATH같은 환경변수에서 $바로 뒤의 주소값
+char	*set_env_vari(char *str, t_list *env, char *path)
 {
 	char	*free_temp;
 	char	*join;
@@ -95,6 +108,31 @@ char	*set_env_empty(char *str, char *path)
 	return (join);
 }
 
+char	*set_exit_status(char *str)
+{
+	char	*free_temp;
+	char	*join;
+	char	*temp;
+	char	*itoa;
+	int		i;
+
+	i = 0;
+	while (str[i] != '$')
+		i++;
+	temp = ft_substr(str, 0, i);
+	free_temp = temp;
+	itoa = ft_itoa(g_status);
+	temp = ft_strjoin (temp, itoa);
+	free(itoa);
+	free(free_temp);
+	i += 2;
+	free_temp = ft_substr(str, i, ft_strlen(&str[i]));
+	join = ft_strjoin(temp, free_temp);
+	free(free_temp);
+	free(temp);
+	return (join);
+}
+
 int	path_len(char *str)
 {
 	int	i;
@@ -117,9 +155,11 @@ char	*check_env_vari(char *str, t_list *env)
 		path = path + 1;
 		while (temp != NULL)
 		{
-			if (ft_strncmp(path, temp->str, path_len(temp->str)) == 0)
+			if (ft_strncmp(path, "?", 1) == 0)
+				return (set_exit_status(str));
+			else if (ft_strncmp(path, temp->str, env_len(path)) == 0 && \
+					ft_strncmp(path, temp->str, path_len(temp->str)) == 0)
 				return (set_env_vari(str, temp, path));
-				// return (check_env_vari(set_env_vari(str, temp, path), env));
 			temp = temp->next;
 		}
 		return (set_env_empty(str, path));
@@ -165,7 +205,7 @@ char	*check_env(char *str, t_list *env)
 	i = 0;
 	quote_single = 0;
 	quote_double = 0;
-	while(str[i])
+	while (str[i])
 	{
 		if (str[i] == '\'' && quote_double % 2 == 0)
 			quote_single++;
@@ -173,7 +213,8 @@ char	*check_env(char *str, t_list *env)
 			quote_double++;
 		else if (str[i] == '$' && quote_single % 2 == 0)
 			return (check_env_vari(str, env));
-		else if (str[i] == '$' && quote_double % 2 != 0 && quote_single % 2 == 0)
+		else if (str[i] == '$' && quote_double % 2 != 0 \
+				&& quote_single % 2 == 0)
 			return (check_env_vari(str, env));
 		i++;
 	}
@@ -216,35 +257,3 @@ char	*change_quote(char *str, t_list *env)
 	}
 	return (temp);
 }
-
-
-
-// char	*change_quote(char *str, t_list *env)
-// {
-// 	int		i;
-// 	char	*temp;
-// 	char	*ret;
-
-// 	i = 0;
-// 	while (str[i] != '\0')
-// 	{
-// 		if (str[i] == '\"')
-// 		{
-// 			temp = check_env_vari(str, env);
-// 			if (temp != str)
-// 			{
-// 				ret = remove_quote(temp, 2);
-// 				free(temp);
-// 				return (ret);
-// 			}
-// 			else
-// 				return (remove_quote(temp, 2));
-// 		}
-// 		else if (str[i] == '\'')
-// 			return (remove_quote(str, 1));
-// 		else if (str[i] == '$')
-// 			return (check_env_vari(str, env));
-// 		i++;
-// 	}
-// 	return (str);
-// }

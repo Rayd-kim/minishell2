@@ -21,7 +21,7 @@ void	make_cmd(char *cut, t_node *start, t_list *env)
 	if (cmd == 0)
 		exit (1);
 	ft_memset (cmd, 0, sizeof(t_node));
-	str = change_quote(cut, env);  //따옴표 제거하면서 $환경변수 확인
+	str = change_quote(cut, env);
 	cmd->cmd = ft_strdup(str);
 	start->right = cmd;
 	if (str != cut)
@@ -33,7 +33,7 @@ void	make_arg(char *cut, t_node *start, t_list *env, t_root *root)
 	char	*temp_free;
 	char	*str;
 
-	str = change_quote(cut, env); //따옴표 제거하면서 $환경변수 확인
+	str = change_quote(cut, env);
 	if (start->right->arg == NULL)
 		start->right->arg = ft_strdup(str);
 	else
@@ -74,7 +74,7 @@ void	make_node(char *split, t_root *start, t_list *env)
 	split_free (cut);
 }
 
-t_root	*make_root(int root_in, int root_out) //root만드는 함수. 인자로 들어온 정수를 stdin, stdout 로 각각 저장.
+t_root	*make_root(int root_in, int root_out)
 {
 	t_root	*ret;
 
@@ -88,22 +88,20 @@ t_root	*make_root(int root_in, int root_out) //root만드는 함수. 인자로 �
 	return (ret);
 }
 
-//파이프 수만큼 미리 노드들을 만들어 놓지않고, 반복문 돌때마다 노드를 탐색해서 필요한 만큼만 만드는 함수.
-//반환값으로는 각 파이프라인의 명령어와 리다이렉션의 최상위 root를 반환한다.
-t_root	*make_cmd_node(t_root *start) 
+t_root	*make_cmd_node(t_root *start)
 {
 	t_root	*temp;
 	t_node	*cmd;
 	t_root	*pipe;
 
 	temp = start;
-	if (temp->left != NULL) //왼쪽이 NULL이 아니라는 뜻은, 현재 파이프로부터 넘어왔다는 뜻. 새로운 파이프라인의 명령어를 담을 root를 만들어준다.
+	if (temp->left != NULL)
 	{
 		pipe = make_root (0, 1);
 		while (temp->right != NULL)
 			temp = temp->right;
 		temp->right = pipe;
-		temp = temp->right; //temp가 현재 명령어라인의 최상의 root를 가르키도록.
+		temp = temp->right;
 	}
 	cmd = (t_node *)malloc(sizeof(t_node));
 	if (cmd == 0)

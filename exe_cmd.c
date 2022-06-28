@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int	g_status;
+
 char	**make_command(t_node *node, t_root *top)
 {
 	char	**command;
@@ -37,15 +39,62 @@ int	pipe_check(t_root *top)
 	return (1);
 }
 
+int	check_slash(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	do_execve_null(t_root *top)
+{
+	int		fd[2];
+	char	buffer[10];
+	int		len;
+
+	pipe (fd);
+	top->pid = fork();
+	if (top->pid == 0)
+	{
+		len = read (top->in_fd, buffer, 10);
+		while (len != 0)
+		{
+			write (top->out_fd, buffer, len);
+			len = read (top->in_fd, buffer, 10);
+		}
+		close (fd[0]);
+		close (fd[1]);
+		if (top->in_fd != 0)
+			close (top->in_fd);
+		exit (0);
+	}
+	if (pipe_check(top) == 0)
+	{
+		top->right->in_fd = fd[0];
+		if (top->in_fd != 0)
+			close (top->in_fd);
+		close (fd[1]);
+	}
+	if (top->in_fd != 0)
+		close (top->in_fd);
+	close (fd[1]);
+}
+
 void	do_execve(char *path, t_root *top)
 {
-	pid_t	pid;
 	char	**command;
 	int		fd[2];
 
 	pipe(fd);
-	pid = fork();
-	if (pid == 0)
+	top->pid = fork();
+	if (top->pid == 0)
 	{
 		if (top->out_fd == 1 && pipe_check(top) == 0)
 		{
@@ -65,7 +114,7 @@ void	do_execve(char *path, t_root *top)
 		}
 		command = make_command(top->left, top);
 		if (execve(path, command, NULL) == -1)
-			error_stdin(path);
+			error_stdin (path, check_slash(top->left->right->cmd));
 	}
 	if (pipe_check(top) == 0)
 	{
@@ -77,7 +126,20 @@ void	do_execve(char *path, t_root *top)
 	if (top->in_fd != 0)
 		close (top->in_fd);
 	close (fd[1]);
-	top->pid = pid;
+}
+
+int	access_check(char *path)
+{
+	int	fd;
+
+	fd = open (path, O_RDONLY);
+	if (fd != -1)
+		return (0);
+	else
+	{
+		close (fd);
+		return (1);
+	}
 }
 
 void	check_cmd(char *str, t_root *top)
@@ -92,13 +154,13 @@ void	check_cmd(char *str, t_root *top)
 	copy = ft_strdup(ft_strchr(str, '/'));
 	split = ft_split(copy, ':');
 	free (copy);
-	while (split[i] != NULL && top->left->right->cmd[0] != '/')
+	while (split[i] != NULL && check_slash(top->left->right->cmd) == 0)
 	{
 		path = ft_strjoin (split[i], "/");
 		temp = path;
 		path = ft_strjoin (temp, top->left->right->cmd);
 		free (temp);
-		if (access(path, X_OK) == 0)
+		if (access_check(path) == 0)
 		{
 			do_execve (path, top);
 			split_free(split);
@@ -112,28 +174,31 @@ void	check_cmd(char *str, t_root *top)
 	do_execve (top->left->right->cmd, top);
 }
 
-void	do_cmd(t_root *top, t_list *env) //외부함수 체크 빌트인은 외부함수 체크전에 확인해서 진행하기.
+void	do_cmd(t_root *top, t_list *env)
 {
 	t_list	*list;
 
 	list = env;
-	while (list != NULL)
+	while (list != NULL && top->left->right != NULL)
 	{
 		if (ft_strncmp(list->str, "PATH=", 5) == 0)
-			break;
+		{
+			check_cmd (list->str, top);
+			return ;
+		}
 		list = list->next;
 	}
-	if (list != NULL)
-		check_cmd (list->str, top);
+	if (top->left->right == NULL)
+		do_execve_null (top);
+	else
+		do_execve (top->left->right->cmd, top);
 }
 
 void	exe_cmd(t_root *start, t_list *env)
 {
 	t_root	*root_temp;
-	t_list	*temp;
 	int		fd[2];
 
-	temp = env;
 	root_temp = start;
 	while (root_temp != NULL)
 	{
@@ -154,7 +219,5 @@ void	exe_cmd(t_root *start, t_list *env)
 			}
 		}
 			root_temp = root_temp->right;
-		//fd값 조정해주기
-		//root_temp의 fd_out을 root_temp->right의 fd_in으로 (오류날때는?)
 	}
 }

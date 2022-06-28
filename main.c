@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-extern int	status;
+extern int	g_status;
 
-void	free_left (t_node *top) // redirection, 명령어 입력된 node들 비워주는 함수
+void	free_left(t_node *top)
 {
 	t_node	*node;
 	t_node	*free_node;
@@ -39,7 +39,7 @@ void	free_left (t_node *top) // redirection, 명령어 입력된 node들 비워�
 	}
 }
 
-void	reset_root (t_root *start) //root기준으로 돌면서 start이외에 다 리셋해주는 함수
+void	reset_root(t_root *start)
 {
 	t_root	*root;
 	t_root	*free_root;
@@ -59,7 +59,7 @@ void	reset_root (t_root *start) //root기준으로 돌면서 start이외에 다 
 	}
 }
 
-int	show_prompt (t_root *start, t_list *env) //함수가 길어서 자름. readline으로 prompt처럼 보이게 하는용도 이전이랑 비슷.
+int	show_prompt(t_root *start, t_list *env)
 {
 	char	*temp;
 	char	**split;
@@ -67,6 +67,8 @@ int	show_prompt (t_root *start, t_list *env) //함수가 길어서 자름. readl
 
 	temp = readline("minishell >>");
 	add_history (temp);
+	if (check_pipe_close(temp) != 0)
+		return (1);
 	change_pipe (temp);
 	split = ft_split (temp, (char)254);
 	if (split == NULL)
@@ -90,8 +92,8 @@ int	show_prompt (t_root *start, t_list *env) //함수가 길어서 자름. readl
 
 void	pid_check(t_root *start)
 {
-	int	now_pid;
-	int	check;
+	int		now_pid;
+	int		check;
 	t_root	*temp;
 
 	now_pid = 0;
@@ -104,27 +106,26 @@ void	pid_check(t_root *start)
 		if (now_pid == -1)
 			break ;
 		if (now_pid == temp->pid)
-			status = check >> 8;
+			g_status = check >> 8;
 	}
 }
 
-int main(int arg, char *argv[], char **envp)
+int	main(int arg, char *argv[], char **envp)
 {
 	t_root	*start;
 	t_list	*env;
 
 	if (arg > 1 || ft_strncmp (argv[0], "./minishell", ft_strlen(argv[0])) != 0)
 		exit (1);
-	env = make_env (envp); // 환경변수 받아와서 리스트로 저장. 중간에 export나 unset으로 처리하기 편하기위해서.
+	env = make_env (envp);
 	while (1)
 	{
 		start = make_root (0, 1);
 		if (show_prompt (start, env) == 0)
 		{
-			exe_cmd (start, env); //이제 위에서 만든 트리구조를 가지고 순서대로 순환하면서 명령어, redirection등을 실행.
+			exe_cmd (start, env);
 			pid_check(start);
 		}
-		printf ("%d\n", status);
 		reset_root(start);
 	}
 	return (0);

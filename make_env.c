@@ -15,7 +15,7 @@
 t_list	*make_list(void)
 {
 	t_list	*ret;
-	
+
 	ret = (t_list *)malloc(sizeof(t_list));
 	if (ret == 0)
 		exit (1);
