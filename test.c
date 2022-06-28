@@ -8,7 +8,6 @@
 
 void	sig_control_c(int sig)
 {
-	printf("\b\b  \b\b\n");
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
