@@ -50,7 +50,7 @@ void	split_free(char **split)
 	free (split);
 }
 
-int	check_quote(char *str)
+int	check_quote(char *str, char **split, char *temp)
 {
 	int	single_q;
 	int	double_q;
@@ -71,6 +71,8 @@ int	check_quote(char *str)
 		return (0);
 	else
 	{
+		split_free (split);
+		free (temp);
 		write (2, "Unclosed quotes\n", 16);
 		return (1);
 	}
@@ -91,7 +93,7 @@ int	check_pipe_close(char *str)
 			arg++;
 		i++;
 	}
-	if (arg == 0)
+	if (arg == 0 && i != 0)
 	{
 		write (2, "Unclosed pipe\n", 14);
 		free (str);

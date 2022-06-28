@@ -76,12 +76,8 @@ int	show_prompt(t_root *start, t_list *env)
 	i = -1;
 	while (split[++i] != NULL)
 	{
-		if (check_quote(split[i]) != 0)
-		{
-			split_free (split);
-			free (temp);
+		if (check_quote(split[i], split, temp) != 0)
 			return (1);
-		}
 		change_space(split[i]);
 		make_node(split[i], make_cmd_node(start), env);
 	}
@@ -110,6 +106,11 @@ void	pid_check(t_root *start)
 	}
 }
 
+void	sig_control_c(int sig)
+{
+	
+}
+
 int	main(int arg, char *argv[], char **envp)
 {
 	t_root	*start;
@@ -118,6 +119,7 @@ int	main(int arg, char *argv[], char **envp)
 	if (arg > 1 || ft_strncmp (argv[0], "./minishell", ft_strlen(argv[0])) != 0)
 		exit (1);
 	env = make_env (envp);
+	signal(SIGINT, sig_control_c);
 	while (1)
 	{
 		start = make_root (0, 1);

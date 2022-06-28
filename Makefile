@@ -22,7 +22,10 @@ FILE = main.c \
 		make_env.c \
 		exe_cmd.c \
 		do_redirection.c \
-		error.c
+		error.c \
+		simple_check.c \
+		builtin_1.c \
+		builtin_2.c
 
 OBJS = $(FILE:.c=.o)
 

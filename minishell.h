@@ -23,6 +23,7 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <errno.h>
+# include <signal.h>
 # include "libft/libft.h"
 
 typedef struct s_node {
@@ -60,6 +61,18 @@ char	*change_quote(char *str, t_list *env);
 char	*check_env_vari(char *str, t_list *env);
 void	error_stdin(char *str, int check);
 void	split_free(char **split);
-int		check_quote(char *str);
+
 int		check_pipe_close(char *str);
+void	set_process_fd(t_root *top, int *fd);
+
+int		check_quote(char *str, char **split, char *temp);
+int		access_check(char *path);
+int		pipe_check(t_root *top);
+int		check_slash(char *str);
+char	**make_command(t_node *node, t_root *top);
+
+void	echo_process(t_root *top);
+void	pwd_process(t_root *top);
+void	env_process(t_root *top, t_list *env);
+void	unset_process(t_root *top, t_list *env);
 #endif
