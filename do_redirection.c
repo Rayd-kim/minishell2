@@ -46,12 +46,17 @@ int	check_heredoc(char *name)
 
 	pipe (fd);
 	temp = readline (">");
-	while (ft_strncmp (temp, name, ft_strlen(temp)) != 0 || ft_strncmp (temp, name, ft_strlen(name)) != 0)
+	if (temp != NULL)
 	{
-		write (fd[1], temp, ft_strlen(temp));
-		write (fd[1], "\n", 1);
-		free (temp);
-		temp = readline (">");
+		while (ft_strncmp (temp, name, ft_strlen(temp)) != 0 || ft_strncmp (temp, name, ft_strlen(name)) != 0)
+		{
+			write (fd[1], temp, ft_strlen(temp));
+			write (fd[1], "\n", 1);
+			free (temp);
+			temp = readline (">");
+			if (temp == NULL)
+				break ;
+		}
 	}
 	free (temp);
 	close (fd[1]);

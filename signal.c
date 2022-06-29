@@ -4,8 +4,17 @@
 
 void	signal_handler(int sig)
 {
-	// struct termios	term;
+	pid_t	pid;
+	int		check;
 
+	while (1)
+	{
+		pid = waitpid(0, &check, WNOHANG);
+		if (pid != -1)
+			
+		else
+			break ;
+	}
 	if (sig == CTRL_C)
 	{
 		g_status = 1;
@@ -15,8 +24,7 @@ void	signal_handler(int sig)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-		// tcgetattr(1, &term);
-		// tcsetattr(1, TCSANOW, &term);
+	
 	}
 }
 
@@ -56,6 +64,12 @@ void	signal_handler(int sig)
 // 			ft_putstr_fd("Quit: 3\n",1);//다시출력해서 커서가 글자의 끝에 있음.
 // 	}
 // }
+
+void	signal_end(int sig)
+{
+	if (sig == CTRL_C)
+		exit (0);
+}
 
 void	set_signal(void)
 {

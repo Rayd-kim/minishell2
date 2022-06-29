@@ -61,7 +61,7 @@ void	reset_root(t_root *start)
 
 void	pid_check(t_root *start)
 {
-	int		now_pid;
+	pid_t	now_pid;
 	int		check;
 	t_root	*temp;
 

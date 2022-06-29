@@ -87,4 +87,5 @@ void	do_execve(char *path, t_root *top);
 void	do_execve_null(t_root *top);
 
 void	set_signal(void);
+void	signal_end(int sig);
 #endif
