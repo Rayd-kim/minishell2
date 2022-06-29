@@ -66,9 +66,21 @@ char	*cmd_redirection(char *str)
 	return (ret);
 }
 
-char	*arg_redirection(char *str, char **cut, int *index)
+char	*arg_redirection_2(char *str, t_list *env)
 {
-	int	i;
+	char	*change;
+	char	*ret;
+
+	change = change_quote(str, env);
+	ret = ft_strdup(change);
+	if (change != str)
+		free(change);
+	return (ret);
+}
+
+char	*arg_redirection(char *str, char **cut, int *index, t_root *root)
+{
+	int		i;
 
 	i = 0;
 	while (str[i] != '>' && str[i] != '<')
@@ -76,23 +88,23 @@ char	*arg_redirection(char *str, char **cut, int *index)
 	if (str[i + 1] == '\0')
 	{
 		*index = *index + 1;
-		return (ft_strdup(cut[*index]));
+		return (arg_redirection_2(cut[*index], root->env));
 	}
 	else if (str[i + 1] == '>' || str[i + 1] == '<')
 	{
 		if (str[i + 2] == '\0')
 		{
 			*index = *index + 1;
-			return (ft_strdup(cut[*index]));
+			return (arg_redirection_2(cut[*index], root->env));
 		}
 		else
-			return (ft_strdup(&str[i + 2]));
+			return (arg_redirection_2(&str[i + 2], root->env));
 	}
 	else
-		return (ft_strdup(&str[i + 1]));
+		return (arg_redirection_2(&str[i + 1], root->env));
 }
 
-void	make_redirection(char *str, t_node	*start, char **cut, int *index)
+void	make_redirection(char *str, t_root	*root, char **cut, int *index)
 {
 	t_node	*temp;
 	t_node	*redirect;
@@ -101,10 +113,10 @@ void	make_redirection(char *str, t_node	*start, char **cut, int *index)
 	if (redirect == 0)
 		exit(1);
 	ft_memset (redirect, 0, sizeof(t_node));
-	temp = start;
+	temp = root->left;
 	while (temp->left != NULL)
 		temp = temp->left;
 	redirect->cmd = cmd_redirection (str);
-	redirect->arg = arg_redirection (str, cut, index);
+	redirect->arg = arg_redirection (str, cut, index, root);
 	temp->left = redirect;
 }

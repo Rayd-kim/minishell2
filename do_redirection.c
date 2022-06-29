@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-int	g_status;
-
 int	open_redirection(char *file_name, int check)
 {
 	int	fd;
@@ -48,8 +46,7 @@ int	check_heredoc(char *name)
 
 	pipe (fd);
 	temp = readline (">");
-	while (ft_strncmp (name, temp, ft_strlen(temp)) != 0 || \
-			ft_strncmp (name, temp, ft_strlen(name) != 0))
+	while (ft_strncmp (temp, name, ft_strlen(temp)) != 0 || ft_strncmp (temp, name, ft_strlen(name)) != 0)
 	{
 		write (fd[1], temp, ft_strlen(temp));
 		write (fd[1], "\n", 1);
@@ -68,6 +65,9 @@ int	open_file(char *file)
 	fd = open (file, O_RDONLY);
 	if (fd < 0)
 	{
+		write (2, "bash: ", 6);
+		write (2, file, ft_strlen(file));
+		write (2, ": ", 2);
 		write (2, strerror(errno), ft_strlen(strerror(errno)));
 		write (2, "\n", 1);
 		g_status = errno - 1;

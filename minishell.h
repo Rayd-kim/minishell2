@@ -26,6 +26,11 @@
 # include <signal.h>
 # include "libft/libft.h"
 
+# define CTRL_C SIGINT
+# define CTRL_SLASH SIGQUIT
+
+extern int g_status;
+
 typedef struct s_node {
 	char			*cmd;
 	char			*arg;
@@ -33,26 +38,28 @@ typedef struct s_node {
 	struct s_node	*right;
 }		t_node;
 
-typedef struct s_root {
-	int				in_fd;
-	int				out_fd;
-	char			bond[2];
-	pid_t			pid;
-	struct s_node	*left;
-	struct s_root	*right;
-}		t_root;
-
 typedef struct s_list {
 	char			*str;
 	struct s_list	*next;
 }		t_list;
 
+typedef struct s_root {
+	int				in_fd;
+	int				out_fd;
+	char			bond[2];
+	char			**shell_envp;
+	pid_t			pid;
+	struct s_list	*env;
+	struct s_node	*left;
+	struct s_root	*right;
+}		t_root;
+
 t_list	*make_env(char **envp);
-t_root	*make_cmd_node(t_root *start);
-t_root	*make_root(int root_in, int root_out);
+t_root	*make_cmd_node(t_root *start, t_list *env);
+t_root	*make_root(int root_in, int root_out, t_list *env);
 void	change_space(char *s);
 void	change_pipe(char *s);
-void	make_redirection(char *str, t_node	*start, char **cut, int *index);
+void	make_redirection(char *str, t_root	*root, char **cut, int *index);
 int		check_redirection(char *str);
 void	make_node(char *split, t_root *start, t_list *env);
 void	exe_cmd(t_root *start, t_list *env);
@@ -62,9 +69,10 @@ char	*check_env_vari(char *str, t_list *env);
 void	error_stdin(char *str, int check);
 void	split_free(char **split);
 
+int		check_whitespace(char *str);
 int		check_pipe_close(char *str);
 void	set_process_fd(t_root *top, int *fd);
-
+int		check_redirection_close(char *str, char **split, char *temp);
 int		check_quote(char *str, char **split, char *temp);
 int		access_check(char *path);
 int		pipe_check(t_root *top);
@@ -75,4 +83,8 @@ void	echo_process(t_root *top);
 void	pwd_process(t_root *top);
 void	env_process(t_root *top, t_list *env);
 void	unset_process(t_root *top, t_list *env);
+void	do_execve(char *path, t_root *top);
+void	do_execve_null(t_root *top);
+
+void	set_signal(void);
 #endif

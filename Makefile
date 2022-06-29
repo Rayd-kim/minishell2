@@ -13,8 +13,13 @@
 NAME = minishell
 
 CC = gcc -Werror -Wall -Wextra 
+
+INCLUDE = -I/Users/youskim/.brew/opt/readline/include
+LIB = -L/Users/youskim/.brew/opt/readline/lib
+
 # -g -fsanitize=address
 # gcc test.c -L/Users/youskim/.brew/opt/readline/lib -I/Users/youskim/.brew/opt/readline/include -lreadline
+
 FILE = main.c \
 		make_node.c \
 		make_redirect.c \
@@ -25,7 +30,9 @@ FILE = main.c \
 		error.c \
 		simple_check.c \
 		builtin_1.c \
-		builtin_2.c
+		builtin_2.c \
+		signal.c \
+		do_execve.c
 
 OBJS = $(FILE:.c=.o)
 
@@ -33,10 +40,10 @@ all : $(NAME)
 
 $(NAME) : $(OBJS)
 	@$(MAKE) -C ./libft all
-	$(CC) $(OBJS) -lreadline -L./libft -lft -o $(NAME)
+	$(CC) $(OBJS) $(INCLUDE) $(LIB) -lreadline -L./libft -lft -o $(NAME)
 
 %.o : %.c
-	$(CC) -c $< -o $@
+	$(CC) -c $< -o $@ $(INCLUDE)
 
 clean :
 	@$(MAKE) -C ./libft clean

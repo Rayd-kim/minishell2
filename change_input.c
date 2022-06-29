@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-int	g_status;
-
 void	change_space(char *s)
 {
 	int	double_q;

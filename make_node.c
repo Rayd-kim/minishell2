@@ -61,7 +61,7 @@ void	make_node(char *split, t_root *start, t_list *env)
 	while (cut[i] != NULL)
 	{
 		if (check_redirection(cut[i]) != 0)
-			make_redirection (cut[i], start->left, cut, &i);
+			make_redirection (cut[i], start, cut, &i);
 		else if (cmd == 0)
 		{
 			make_cmd(cut[i], start->left, env);
@@ -74,7 +74,7 @@ void	make_node(char *split, t_root *start, t_list *env)
 	split_free (cut);
 }
 
-t_root	*make_root(int root_in, int root_out)
+t_root	*make_root(int root_in, int root_out, t_list *env)
 {
 	t_root	*ret;
 
@@ -85,10 +85,11 @@ t_root	*make_root(int root_in, int root_out)
 	ret->in_fd = root_in;
 	ret->out_fd = root_out;
 	ret->bond[0] = (char)255;
+	ret->env = env;
 	return (ret);
 }
 
-t_root	*make_cmd_node(t_root *start)
+t_root	*make_cmd_node(t_root *start, t_list *env)
 {
 	t_root	*temp;
 	t_node	*cmd;
@@ -97,7 +98,7 @@ t_root	*make_cmd_node(t_root *start)
 	temp = start;
 	if (temp->left != NULL)
 	{
-		pipe = make_root (0, 1);
+		pipe = make_root (0, 1, env);
 		while (temp->right != NULL)
 			temp = temp->right;
 		temp->right = pipe;

@@ -1,7 +1,5 @@
 #include "minishell.h"
 
-int	g_status;
-
 void prt_env(t_list *env)
 {
 	t_list *temp;

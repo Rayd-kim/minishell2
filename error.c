@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-int	g_status;
-
 void	error_stdin(char *str, int check)
 {
 	if (check == 1)
@@ -78,6 +76,19 @@ int	check_quote(char *str, char **split, char *temp)
 	}
 }
 
+int	check_whitespace(char *str)
+{
+	int	i = 0;
+
+	while (str[i])
+	{
+		if (str[i] != ' ')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	check_pipe_close(char *str)
 {
 	int	i;
@@ -87,16 +98,49 @@ int	check_pipe_close(char *str)
 	arg = 0;
 	while (str[i] != '\0')
 	{
-		if (str[i] == '|')
+		if (str[i] == '|' && arg == 0)
+			break ;
+		else if (str[i] == '|')
 			arg = 0;
 		else if (str[i] != ' ')
 			arg++;
 		i++;
 	}
-	if (arg == 0 && i != 0)
+	if (str[i] == '\0' && i == 0)
+		return (0);
+	else if (arg == 0)
 	{
 		write (2, "Unclosed pipe\n", 14);
 		free (str);
+		return (1);
+	}
+	return (0);
+}
+
+int	check_redirection_close(char *str, char **split, char *temp)
+{
+	int	i;
+	int	arg;
+
+	arg = 0;
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == '>' && str[i + 1] == '<')
+			break ;
+		else if (str[i] == '<' && str[i + 1] == '>')
+			break ;
+		else if (str[i] == '>' || str[i] == '<')
+			arg = 0;
+		else if (str[i] != ' ')
+			arg++;
+		i++;
+	}
+	if (str[i] != '\0' || arg == 0)
+	{
+		write (2, "Redirection error\n", 18);
+		split_free (split);
+		free (temp);
 		return (1);
 	}
 	return (0);

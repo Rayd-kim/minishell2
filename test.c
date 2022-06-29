@@ -1,55 +1,33 @@
 #include "minishell.h"
 
-// void	sig_handler(int sig)
-// {
-// 	printf("\npress button\n");
-// }
-
-
-void	sig_control_c(int sig)
+int	ftt_strncmp(const char *s1, const char *s2, size_t n)
 {
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
-}
+	size_t			i;
+	unsigned char	*a1;
+	unsigned char	*a2;
 
-int	main(void)
-{
-
-	// signal(SIGINT, sig_handler);
-	// signal(SIGTERM, sig_handler);
-	// signal(SIGQUIT, sig_handler);
-	char	*temp;
-	int		t = 0;
-
-	signal(SIGINT, sig_control_c);
-	while (1)
+	a1 = (unsigned char *)s1;
+	a2 = (unsigned char *)s2;
+	i = 0;
+	while (i < n && a2[i] != '\0')
 	{
-		while (!t)
-		{
-			temp = readline ("prompt>>");
-			printf ("%s\n", temp);
-			free(temp);
-		}
+		if (a1[i] != a2[i])
+			return (a1[i] - a2[i]);
+		i++;
 	}
-	return (0);
+	if (i == n || a1[i] == '\0')
+		return (0);
+	else
+		return (a1[i]);
 }
 
+int main(void)
+{
+	char	*s1 = "aaa";
+	char	*s2;
 
-// void (*old_fun)( int);
+	s2 = readline(">");
+	printf ("%d\n", ftt_strncmp(s1, s2, ft_strlen(s1)));
+	printf ("%d\n", ftt_strncmp(s1, s2, ft_strlen(s2)));
 
-// void sigint_handler( int signo)
-// {
-//    printf( "Ctrl-C 키를 눌루셨죠!!\n");
-//    printf( "또 누르시면 종료됩니다.\n");
-// //    signal( SIGINT, old_fun);   // 또는 signal( SIGINT, SIG_DFL);
-// }
-
-// int main( void)
-// {
-//    signal( SIGINT, sigint_handler);
-//    while(1 ){
-//       printf( "badayak.com\n");
-//       sleep( 1);
-//    }
-// }
+}

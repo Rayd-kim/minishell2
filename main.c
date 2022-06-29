@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-extern int	g_status;
+int	g_status = 0;
 
 void	free_left(t_node *top)
 {
@@ -59,33 +59,6 @@ void	reset_root(t_root *start)
 	}
 }
 
-int	show_prompt(t_root *start, t_list *env)
-{
-	char	*temp;
-	char	**split;
-	int		i;
-
-	temp = readline("minishell >>");
-	add_history (temp);
-	if (check_pipe_close(temp) != 0)
-		return (1);
-	change_pipe (temp);
-	split = ft_split (temp, (char)254);
-	if (split == NULL)
-		exit (1);
-	i = -1;
-	while (split[++i] != NULL)
-	{
-		if (check_quote(split[i], split, temp) != 0)
-			return (1);
-		change_space(split[i]);
-		make_node(split[i], make_cmd_node(start), env);
-	}
-	split_free (split);
-	free (temp);
-	return (0);
-}
-
 void	pid_check(t_root *start)
 {
 	int		now_pid;
@@ -106,9 +79,50 @@ void	pid_check(t_root *start)
 	}
 }
 
-void	sig_control_c(int sig)
+// void	*signal_handler(int sig)
+// {
+// 	if (sig == CTRL_C)
+
+// 	else if (sig == CTRL_D) //얘 일때는 함수에서 exit써서 아예 종료되도록.
+
+// 	else if (sig == CTRL_SLASH)
+
+// }
+
+int	show_prompt(t_root *start, t_list *env)
 {
-	
+	char	*temp;
+	char	**split;
+	int		i;
+
+	temp = readline("minishell >>");
+	if (temp != NULL && check_whitespace(temp) == 0)
+	{
+		add_history (temp);
+		if (check_pipe_close(temp) != 0)
+			return (1);
+		change_pipe (temp);
+		split = ft_split (temp, (char)254);
+		if (split == NULL)
+			exit (1);
+		i = -1;
+		while (split[++i] != NULL)
+		{
+			if (check_quote(split[i], split, temp) != 0 \
+				|| check_redirection_close(split[i], split, temp) != 0)
+				return (1);
+			change_space(split[i]);
+			make_node(split[i], make_cmd_node((start), env), env);
+		}
+		split_free (split);
+		free (temp);
+	}
+	if (temp == NULL)
+	{
+		printf("\x1b[1A\033[12C exit\n");
+		exit(0);
+	}
+	return (0);
 }
 
 int	main(int arg, char *argv[], char **envp)
@@ -119,10 +133,10 @@ int	main(int arg, char *argv[], char **envp)
 	if (arg > 1 || ft_strncmp (argv[0], "./minishell", ft_strlen(argv[0])) != 0)
 		exit (1);
 	env = make_env (envp);
-	signal(SIGINT, sig_control_c);
+	set_signal();
 	while (1)
 	{
-		start = make_root (0, 1);
+		start = make_root (0, 1, env);
 		if (show_prompt (start, env) == 0)
 		{
 			exe_cmd (start, env);

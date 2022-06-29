@@ -10,16 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "libft.h"
 
 char	*ft_strdup(const char *str)
 {
 	int		len;
 	char	*arr;
 
-	len = 0;
-	while (str[len])
-		len++;
+	len = ft_strlen (str);
 	arr = (char *)malloc(sizeof(char) * (len + 1));
 	if (arr == 0)
 		return (NULL);

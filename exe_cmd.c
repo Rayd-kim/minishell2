@@ -12,42 +12,6 @@
 
 #include "minishell.h"
 
-int	g_status;
-
-void	do_execve_null(t_root *top)
-{
-	int		fd[2];
-	char	buffer[10];
-	int		len;
-
-	pipe (fd);
-	top->pid = fork();
-	if (top->pid == 0)
-	{
-		len = read (top->in_fd, buffer, 10);
-		while (len != 0)
-		{
-			write (top->out_fd, buffer, len);
-			len = read (top->in_fd, buffer, 10);
-		}
-		close (fd[0]);
-		close (fd[1]);
-		if (top->in_fd != 0)
-			close (top->in_fd);
-		exit (0);
-	}
-	if (pipe_check(top) == 0)
-	{
-		top->right->in_fd = fd[0];
-		if (top->in_fd != 0)
-			close (top->in_fd);
-		close (fd[1]);
-	}
-	if (top->in_fd != 0)
-		close (top->in_fd);
-	close (fd[1]);
-}
-
 void	set_process_fd(t_root *top, int *fd)
 {
 	if (top->out_fd == 1 && pipe_check(top) == 0)
@@ -66,32 +30,6 @@ void	set_process_fd(t_root *top, int *fd)
 			close (top->in_fd);
 		dup2(top->out_fd, 1);
 	}
-}
-
-void	do_execve(char *path, t_root *top)
-{
-	char	**command;
-	int		fd[2];
-
-	pipe(fd);
-	top->pid = fork();
-	if (top->pid == 0)
-	{
-		set_process_fd(top, fd);
-		command = make_command(top->left, top);
-		if (execve(path, command, NULL) == -1)
-			error_stdin (path, check_slash(top->left->right->cmd));
-	}
-	if (pipe_check(top) == 0)
-	{
-		top->right->in_fd = fd[0];
-		if (top->in_fd != 0)
-			close (top->in_fd);
-		close (fd[1]);
-	}
-	if (top->in_fd != 0)
-		close (top->in_fd);
-	close (fd[1]);
 }
 
 void	check_cmd(char *str, t_root *top)
@@ -128,15 +66,15 @@ void	check_cmd(char *str, t_root *top)
 
 int	check_builtin(char *str, t_root *top, t_list *env)
 {
-	if (ft_strncmp(str, "echo", ft_strlen (str)) == 0)
+	if (ft_strncmp(str, "echo", ft_strlen (str)) == 0 && ft_strncmp(str, "echo", 4) == 0)
 		echo_process(top);
 	// else if (ft_strncmp(str, "cd", ft_strlen (str)) == 0)
-	else if (ft_strncmp(str, "env", ft_strlen (str)) == 0)
+	else if (ft_strncmp(str, "env", ft_strlen (str)) == 0 && ft_strncmp(str, "env", 3) == 0)
 		env_process(top, env);
-	else if (ft_strncmp(str, "unset", ft_strlen (str)) == 0)
+	else if (ft_strncmp(str, "unset", ft_strlen (str)) == 0 && ft_strncmp(str, "unset", 5) == 0)
 		unset_process(top, env);
 	// else if (ft_strncmp(str, "export", ft_strlen (str)) == 0)
-	else if (ft_strncmp(str, "pwd", ft_strlen (str)) == 0)
+	else if (ft_strncmp(str, "pwd", ft_strlen (str)) == 0 && ft_strncmp(str, "pwd", 3) == 0)
 		pwd_process(top);
 	// else if (ft_strncmp(str, "exit", ft_strlen (str)) == 0)
 	else
