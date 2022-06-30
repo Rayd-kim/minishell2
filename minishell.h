@@ -47,7 +47,7 @@ typedef struct s_root {
 	int				in_fd;
 	int				out_fd;
 	char			bond[2];
-	char			**shell_envp;
+	int				here_doc;
 	pid_t			pid;
 	struct s_list	*env;
 	struct s_node	*left;
@@ -95,4 +95,5 @@ void	do_execve(char *path, t_root *top);
 void	do_execve_null(t_root *top);
 
 void	set_signal(void);
+int		do_heredoc_first(t_root *top);
 #endif

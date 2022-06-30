@@ -41,11 +41,12 @@ int	open_redirection(char *file_name, int check)
 
 int	check_heredoc(char *name)
 {
-	int		fd[2];
 	char	*temp;
+	int		fd[2];
 
-	pipe (fd);
 	g_vari.flag = 1;
+	
+	pipe(fd);
 	temp = readline (">");
 	if (temp != NULL)
 	{
@@ -91,7 +92,7 @@ void	set_redirection(t_root *top, int fd, int in_or_out, int *check)
 	}
 	if (in_or_out == 0)
 	{
-		if (top->in_fd != 0)
+		if (top->in_fd != 0 && top->in_fd != top->here_doc)
 			close (top->in_fd);
 		top->in_fd = fd;
 	}
@@ -103,23 +104,51 @@ void	set_redirection(t_root *top, int fd, int in_or_out, int *check)
 	}
 }
 
+int	do_heredoc_first(t_root *top)
+{
+	int	check;
+	t_root	*root;
+	t_node	*node;
+
+	root = top;
+	while (root != NULL)
+	{
+		node = root->left->left;
+		while (node != NULL)
+		{
+			if (ft_strncmp (node->cmd, "<<", 2) == 0)
+			{
+				set_redirection(root, check_heredoc (node->arg), 0, &check);
+				root->here_doc++;
+			}
+			if (check != 0)
+				return (1);
+			node = node->left;
+		}
+		root = root->right;
+	}
+	return (0);
+}
+
 int	do_redirection(t_root *top)
 {
 	t_node	*temp;
 	int		check;
 
+	if (top->here_doc != 0)
+		top->here_doc = top->in_fd;
 	check = 0;
 	temp = top->left->left;
 	while (temp != NULL)
 	{
-		if (ft_strncmp (temp->cmd, ">>", 2) == 0)
+		if (ft_strncmp (temp->cmd, ">>", 3) == 0)
 			set_redirection(top, open_redirection(temp->arg, 2), 1, &check);
-		else if (ft_strncmp (temp->cmd, "<<", 2) == 0)
-			set_redirection(top, check_heredoc (temp->arg), 0, &check);
-		else if (ft_strncmp (temp->cmd, ">", 1) == 0)
-			set_redirection(top, open_redirection(temp->arg, 1), 1, &check);
-		else
+		else if (ft_strncmp (temp->cmd, "<", 2) == 0)
 			set_redirection(top, open_file (temp->arg), 0, &check);
+		else if (ft_strncmp (temp->cmd, "<<", 3) == 0)
+			set_redirection(top, top->here_doc, 0, &check);
+		else if (ft_strncmp (temp->cmd, ">", 2) == 0)
+			set_redirection(top, open_redirection(temp->arg, 1), 1, &check);
 		if (check != 0)
 			return (1);
 		temp = temp->left;

@@ -111,6 +111,8 @@ void	exe_cmd(t_root *start, t_list *env)
 	int		fd[2];
 
 	root_temp = start;
+	if (do_heredoc_first(start) != 0)
+		return ;
 	while (root_temp != NULL)
 	{
 		if (root_temp->left != NULL)
