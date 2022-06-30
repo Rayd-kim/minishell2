@@ -39,7 +39,7 @@ int	open_redirection(char *file_name, int check)
 	}
 }
 
-int	check_heredoc(char *name)
+int	check_heredoc(char *name, t_root *top)
 {
 	int		fd[2];
 	char	*temp;
@@ -70,7 +70,7 @@ int	open_file(char *file)
 	fd = open (file, O_RDONLY);
 	if (fd < 0)
 	{
-		write (2, "bash: ", 6);
+		write (2, "Minishell: ", 11);
 		write (2, file, ft_strlen(file));
 		write (2, ": ", 2);
 		write (2, strerror(errno), ft_strlen(strerror(errno)));
@@ -113,7 +113,7 @@ int	do_redirection(t_root *top)
 		if (ft_strncmp (temp->cmd, ">>", 2) == 0)
 			set_redirection(top, open_redirection(temp->arg, 2), 1, &check);
 		else if (ft_strncmp (temp->cmd, "<<", 2) == 0)
-			set_redirection(top, check_heredoc (temp->arg), 0, &check);
+			set_redirection(top, check_heredoc (temp->arg, top), 0, &check);
 		else if (ft_strncmp (temp->cmd, ">", 1) == 0)
 			set_redirection(top, open_redirection(temp->arg, 1), 1, &check);
 		else

@@ -79,16 +79,6 @@ void	pid_check(t_root *start)
 	}
 }
 
-// void	*signal_handler(int sig)
-// {
-// 	if (sig == CTRL_C)
-
-// 	else if (sig == CTRL_D) //얘 일때는 함수에서 exit써서 아예 종료되도록.
-
-// 	else if (sig == CTRL_SLASH)
-
-// }
-
 int	show_prompt(t_root *start, t_list *env)
 {
 	char	*temp;
@@ -117,11 +107,14 @@ int	show_prompt(t_root *start, t_list *env)
 		split_free (split);
 		free (temp);
 	}
-	if (temp == NULL)
+	else if (temp != NULL && check_whitespace(temp) != 0)
+			free(temp);
+	else if (temp == NULL)
 	{
 		printf("\x1b[1A\033[12C exit\n");
 		exit(0);
 	}
+	
 	return (0);
 }
 

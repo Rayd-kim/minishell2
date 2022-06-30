@@ -1,30 +1,38 @@
 #include "minishell.h"
-#include <termios.h>
-
+#include <sys/ioctl.h>
 
 void	signal_handler(int sig)
 {
 	pid_t	pid;
 	int		check;
+	int		process;
 
+	process = 0;
 	while (1)
 	{
 		pid = waitpid(0, &check, WNOHANG);
 		if (pid != -1)
-			
+		{
+			process++;
+			kill (pid, SIGQUIT);
+		}
 		else
 			break ;
 	}
-	if (sig == CTRL_C)
+	if (sig == CTRL_C && process == 0)
 	{
 		g_status = 1;
 		rl_on_new_line();
 		rl_redisplay();
-    	write (1, "\n", 1);
+    	write (1, "  \n", 3);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-	
+	}
+	else if (sig == CTRL_C && process != 0)
+	{
+		rl_on_new_line();
+		write (1, "\n", 1);
 	}
 }
 

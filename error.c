@@ -16,7 +16,7 @@ void	error_stdin(char *str, int check)
 {
 	if (check == 1)
 	{
-		write (2, "bash: ", 6);
+		write (2, "Minishell: ", 11);
 		write (2, str, ft_strlen(str));
 		write (2, ": ", 2);
 		write (2, strerror(errno), ft_strlen(strerror(errno)));
@@ -26,7 +26,7 @@ void	error_stdin(char *str, int check)
 	}
 	else
 	{
-		write (2, "bash: ", 6);
+		write (2, "Minishell: ", 11);
 		write (2, str, ft_strlen(str));
 		write (2, ": ", 2);
 		write (2, "command not found\n", 18);
