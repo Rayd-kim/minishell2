@@ -119,7 +119,7 @@ char	*set_exit_status(char *str)
 		i++;
 	temp = ft_substr(str, 0, i);
 	free_temp = temp;
-	itoa = ft_itoa(g_status);
+	itoa = ft_itoa(g_vari.status);
 	temp = ft_strjoin (temp, itoa);
 	free(itoa);
 	free(free_temp);

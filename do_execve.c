@@ -72,7 +72,6 @@ void	do_execve(char *path, t_root *top)
 	top->pid = fork();
 	if (top->pid == 0)
 	{
-		signal (CTRL_C, signal_end);
 		set_process_fd(top, fd);
 		command = make_command(top->left, top);
 		if (execve(path, command, make_exe_env(top->env)) == -1)

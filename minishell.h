@@ -29,7 +29,7 @@
 # define CTRL_C SIGINT
 # define CTRL_SLASH SIGQUIT
 
-extern int g_status;
+// extern int g_status;
 
 typedef struct s_node {
 	char			*cmd;
@@ -54,6 +54,13 @@ typedef struct s_root {
 	struct s_root	*right;
 }		t_root;
 
+typedef struct s_vari {
+	int	status;
+	int	flag;
+}		t_vari;
+
+extern	t_vari	g_vari;
+
 t_list	*make_env(char **envp);
 t_root	*make_cmd_node(t_root *start, t_list *env);
 t_root	*make_root(int root_in, int root_out, t_list *env);
@@ -69,6 +76,7 @@ char	*check_env_vari(char *str, t_list *env);
 void	error_stdin(char *str, int check);
 void	split_free(char **split);
 
+void	pid_check(t_root *start);
 int		check_whitespace(char *str);
 int		check_pipe_close(char *str);
 void	set_process_fd(t_root *top, int *fd);
@@ -87,5 +95,4 @@ void	do_execve(char *path, t_root *top);
 void	do_execve_null(t_root *top);
 
 void	set_signal(void);
-void	signal_end(int sig);
 #endif

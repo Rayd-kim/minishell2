@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	g_status = 0;
+t_vari	g_vari;
 
 void	free_left(t_node *top)
 {
@@ -75,7 +75,7 @@ void	pid_check(t_root *start)
 		if (now_pid == -1)
 			break ;
 		if (now_pid == temp->pid)
-			g_status = check >> 8;
+			g_vari.status = check >> 8;
 	}
 }
 
@@ -114,7 +114,6 @@ int	show_prompt(t_root *start, t_list *env)
 		printf("\x1b[1A\033[12C exit\n");
 		exit(0);
 	}
-	
 	return (0);
 }
 
@@ -125,6 +124,7 @@ int	main(int arg, char *argv[], char **envp)
 
 	if (arg > 1 || ft_strncmp (argv[0], "./minishell", ft_strlen(argv[0])) != 0)
 		exit (1);
+	ft_memset (&g_vari, 0, sizeof(t_vari));
 	env = make_env (envp);
 	set_signal();
 	while (1)
@@ -132,10 +132,14 @@ int	main(int arg, char *argv[], char **envp)
 		start = make_root (0, 1, env);
 		if (show_prompt (start, env) == 0)
 		{
+			if (g_vari.status == 130)
+				g_vari.status = 0;
 			exe_cmd (start, env);
-			pid_check(start);
 		}
 		reset_root(start);
+		if (g_vari.flag > 1)
+			dup2 (g_vari.flag, 0);
+		g_vari.flag = 0;
 	}
 	return (0);
 }

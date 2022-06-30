@@ -21,7 +21,7 @@ void	error_stdin(char *str, int check)
 		write (2, ": ", 2);
 		write (2, strerror(errno), ft_strlen(strerror(errno)));
 		write (2, "\n", 1);
-		g_status = 127;
+		g_vari.status = 127;
 		exit (127);
 	}
 	else
@@ -30,7 +30,7 @@ void	error_stdin(char *str, int check)
 		write (2, str, ft_strlen(str));
 		write (2, ": ", 2);
 		write (2, "command not found\n", 18);
-		g_status = 127;
+		g_vari.status = 127;
 		exit (127);
 	}
 }

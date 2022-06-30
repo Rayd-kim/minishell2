@@ -80,13 +80,13 @@ void	bt_unset(char *args, t_list *env_list)
 			ft_putstr_fd("unset: `", STDERR_FILENO);
 			ft_putstr_fd(args, STDERR_FILENO);
 			ft_putendl_fd("':  not a valid identifier", STDERR_FILENO);
-			g_status = 1;
+			g_vari.status = 1;
 			return ;
 		}
 		else
 		{
 			delete_env(env_list, args);
-			g_status = 0;
+			g_vari.status = 0;
 			return ;
 		}
 		i++;

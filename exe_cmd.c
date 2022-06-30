@@ -115,7 +115,7 @@ void	exe_cmd(t_root *start, t_list *env)
 	{
 		if (root_temp->left != NULL)
 		{
-			if (do_redirection(root_temp) == 0)
+			if (do_redirection(root_temp) == 0 && g_vari.status != 130)
 				do_cmd(root_temp, env);
 			else
 			{
@@ -131,4 +131,5 @@ void	exe_cmd(t_root *start, t_list *env)
 		}
 			root_temp = root_temp->right;
 	}
+	pid_check(start);
 }

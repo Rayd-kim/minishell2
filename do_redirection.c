@@ -45,6 +45,7 @@ int	check_heredoc(char *name)
 	char	*temp;
 
 	pipe (fd);
+	g_vari.flag = 1;
 	temp = readline (">");
 	if (temp != NULL)
 	{
@@ -76,7 +77,7 @@ int	open_file(char *file)
 		write (2, ": ", 2);
 		write (2, strerror(errno), ft_strlen(strerror(errno)));
 		write (2, "\n", 1);
-		g_status = errno - 1;
+		g_vari.status = errno - 1;
 	}
 	return (fd);
 }

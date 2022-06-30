@@ -1,27 +1,40 @@
 #include "minishell.h"
 #include <sys/ioctl.h>
 
-void	signal_handler(int sig)
+void	kill_process(int *process)
 {
 	pid_t	pid;
 	int		check;
-	int		process;
 
-	process = 0;
+	*process = 0;
 	while (1)
 	{
 		pid = waitpid(0, &check, WNOHANG);
 		if (pid != -1)
 		{
-			process++;
+			*process += 1;
 			kill (pid, SIGQUIT);
 		}
 		else
 			break ;
 	}
-	if (sig == CTRL_C && process == 0)
+}
+
+void	signal_handler(int sig)
+{
+	int		process;
+
+	kill_process(&process);
+	if (sig == CTRL_C && g_vari.flag == 1)
 	{
-		g_status = 1;
+		g_vari.status = 130;
+		g_vari.flag = dup(0);
+		write (1, ">  \n", 4);
+		close(0);
+	}
+	else if (sig == CTRL_C && process == 0)
+	{
+		g_vari.status = 1;
 		rl_on_new_line();
 		rl_redisplay();
     	write (1, "  \n", 3);
@@ -30,61 +43,11 @@ void	signal_handler(int sig)
 		rl_redisplay();
 	}
 	else if (sig == CTRL_C && process != 0)
-	{
-		rl_on_new_line();
 		write (1, "\n", 1);
-	}
-}
-
-// void	handle_signal(int signo)
-// {
-// 	pid_t	pid;
-// 	int		status;
-
-// 	pid = waitpid(-1, &status, WNOHANG);
-// 	//-1 : 자식 프로세스를 기다림.
-// 	//status : 자식 프로세스가 종료되면 자식 pid값이 할당 됨.
-// 	//WNOHANG : 자식 프로세스가 종료되지 않아서 pid를 회수할 수 없는 경우 반환값으로 0을 받음.
-// 	if (signo == SIGINT){
-// 		if (pid == -1)
-// 		//pid == -1 : 자식 프로세스가 없는 경우
-// 		{
-// 		rl_on_new_line();//개행을 실행하기 위한 엔터 역할
-// 		rl_redisplay();// 입력받은 것 다시 출력
-// 		ft_putstr_fd("  \n",1);//개행
-// 		rl_on_new_line();//개행을 실행하기 위한 엔터 역할
-// 		// readline 다시 실행하는 코드
-// 		rl_replace_line("", 0);//buffer초기화
-// 		rl_redisplay();//실행
-// 		}
-// 		else
-// 			ft_putstr_fd("\n",1);//다시출력해서 커서가 글자의 끝에 있음.
-// 	}
-// 	else if(signo == SIGQUIT)
-// 	{
-// 		if (pid == -1) //ok.
-// 		{
-// 		rl_on_new_line();//입력 받은 것 종료
-// 		rl_redisplay();// 입력받은 것 다시 출력
-// 		ft_putstr_fd("  \b\b",1);
-// 		}
-// 		else
-// 			ft_putstr_fd("Quit: 3\n",1);//다시출력해서 커서가 글자의 끝에 있음.
-// 	}
-// }
-
-void	signal_end(int sig)
-{
-	if (sig == CTRL_C)
-		exit (0);
 }
 
 void	set_signal(void)
 {
 	signal (CTRL_C, signal_handler);
 	signal (CTRL_SLASH, SIG_IGN);
-	// if (signal (CTRL_SLASH, SIG_IGN))
-	// 	g_status = g_status;
-    // signal(SIGINT, handle_signal);//ctrl + c
-	// signal(SIGQUIT, handle_signal);//ctrl + '\'
 }
