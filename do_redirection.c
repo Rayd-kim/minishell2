@@ -39,7 +39,7 @@ int	open_redirection(char *file_name, int check)
 	}
 }
 
-int	check_heredoc(char *name, t_root *top)
+int	check_heredoc(char *name)
 {
 	int		fd[2];
 	char	*temp;
@@ -58,7 +58,8 @@ int	check_heredoc(char *name, t_root *top)
 				break ;
 		}
 	}
-	free (temp);
+	if (temp != NULL)
+		free (temp);
 	close (fd[1]);
 	return (fd[0]);
 }
@@ -113,7 +114,7 @@ int	do_redirection(t_root *top)
 		if (ft_strncmp (temp->cmd, ">>", 2) == 0)
 			set_redirection(top, open_redirection(temp->arg, 2), 1, &check);
 		else if (ft_strncmp (temp->cmd, "<<", 2) == 0)
-			set_redirection(top, check_heredoc (temp->arg, top), 0, &check);
+			set_redirection(top, check_heredoc (temp->arg), 0, &check);
 		else if (ft_strncmp (temp->cmd, ">", 1) == 0)
 			set_redirection(top, open_redirection(temp->arg, 1), 1, &check);
 		else
