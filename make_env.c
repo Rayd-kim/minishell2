@@ -36,7 +36,7 @@ t_list	*make_env(char **envp)
 	while (envp[++i] != NULL)
 	{
 		temp->next = make_list ();
-		temp->next->str = envp[i];
+		temp->next->str = ft_strdup(envp[i]);
 		temp = temp->next;
 	}
 	return (ret);

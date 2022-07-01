@@ -14,22 +14,21 @@
 
 void	set_process_fd(t_root *top, int *fd)
 {
-	if (top->out_fd == 1 && pipe_check(top) == 0)
+	if ((top->out_fd == 1 && pipe_check(top) == 0) || \
+		(pipe_heredoc_check(top) == 0 && top->out_fd == 1))
 	{
 		dup2(fd[1], 1);
 		dup2(top->in_fd, 0);
-		if (top->in_fd != 0)
-			close (top->in_fd);
-		close (fd[0]);
-		top->right->in_fd = fd[0];
 	}
 	else
-	{	
+	{
 		dup2(top->in_fd, 0);
-		if (top->in_fd != 0)
-			close (top->in_fd);
 		dup2(top->out_fd, 1);
+		close (fd[1]);
 	}
+	if (top->in_fd != 0)
+		close (top->in_fd);
+	close (fd[0]);
 }
 
 void	check_cmd(char *str, t_root *top)
@@ -73,10 +72,12 @@ int	check_builtin(char *str, t_root *top, t_list *env)
 		env_process(top, env);
 	else if (ft_strncmp(str, "unset", ft_strlen (str)) == 0 && ft_strncmp(str, "unset", 5) == 0)
 		unset_process(top, env);
-	// else if (ft_strncmp(str, "export", ft_strlen (str)) == 0)
+	else if (ft_strncmp(str, "export", ft_strlen (str)) == 0 && ft_strncmp(str, "export", 6) == 0)
+		export_process(top, env);
 	else if (ft_strncmp(str, "pwd", ft_strlen (str)) == 0 && ft_strncmp(str, "pwd", 3) == 0)
 		pwd_process(top);
-	// else if (ft_strncmp(str, "exit", ft_strlen (str)) == 0)
+	else if (ft_strncmp(str, "exit", ft_strlen (str)) == 0 && ft_strncmp(str, "exit", 3) == 0)
+		exit_process(top);
 	else
 		return (1);
 	return (0);

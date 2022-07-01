@@ -1,34 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   do_execve.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/01 16:47:49 by youskim           #+#    #+#             */
+/*   Updated: 2022/07/01 16:47:50 by youskim          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	do_execve_null(t_root *top)
 {
 	int		fd[2];
-	char	buffer[10];
-	int		len;
 
 	pipe (fd);
-	top->pid = fork();
-	if (top->pid == 0)
-	{
-		len = read (top->in_fd, buffer, 10);
-		while (len != 0)
-		{
-			write (top->out_fd, buffer, len);
-			len = read (top->in_fd, buffer, 10);
-		}
-		close (fd[0]);
-		close (fd[1]);
-		if (top->in_fd != 0)
-			close (top->in_fd);
-		exit (0);
-	}
 	if (pipe_check(top) == 0)
-	{
 		top->right->in_fd = fd[0];
-		if (top->in_fd != 0)
-			close (top->in_fd);
-		close (fd[1]);
-	}
+	else
+		close (fd[0]);
 	if (top->in_fd != 0)
 		close (top->in_fd);
 	close (fd[1]);
@@ -49,7 +41,7 @@ char	**make_exe_env(t_list *env)
 		len++;
 		list = list->next;
 	}
-	ret = (char **)malloc(sizeof(char*) * (len + 1));
+	ret = (char **)malloc(sizeof(char *) * (len + 1));
 	if (ret == 0)
 		exit (1);
 	list = env;
@@ -78,12 +70,9 @@ void	do_execve(char *path, t_root *top)
 			error_stdin (path, check_slash(top->left->right->cmd));
 	}
 	if (pipe_check(top) == 0)
-	{
 		top->right->in_fd = fd[0];
-		if (top->in_fd != 0)
-			close (top->in_fd);
-		close (fd[1]);
-	}
+	else
+		close (fd[0]);
 	if (top->in_fd != 0)
 		close (top->in_fd);
 	close (fd[1]);

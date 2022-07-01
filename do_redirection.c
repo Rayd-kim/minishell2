@@ -45,12 +45,12 @@ int	check_heredoc(char *name)
 	int		fd[2];
 
 	g_vari.flag = 1;
-	
 	pipe(fd);
 	temp = readline (">");
 	if (temp != NULL)
 	{
-		while (ft_strncmp (temp, name, ft_strlen(temp)) != 0 || ft_strncmp (temp, name, ft_strlen(name)) != 0)
+		while (ft_strncmp (temp, name, ft_strlen(temp)) != 0 \
+			|| ft_strncmp (temp, name, ft_strlen(name)) != 0)
 		{
 			write (fd[1], temp, ft_strlen(temp));
 			write (fd[1], "\n", 1);
@@ -106,7 +106,7 @@ void	set_redirection(t_root *top, int fd, int in_or_out, int *check)
 
 int	do_heredoc_first(t_root *top)
 {
-	int	check;
+	int		check;
 	t_root	*root;
 	t_node	*node;
 
@@ -121,7 +121,7 @@ int	do_heredoc_first(t_root *top)
 				set_redirection(root, check_heredoc (node->arg), 0, &check);
 				root->here_doc++;
 			}
-			if (check != 0)
+			if (check != 0 || g_vari.status == 130)
 				return (1);
 			node = node->left;
 		}

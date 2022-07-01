@@ -59,34 +59,44 @@ typedef struct s_vari {
 	int	flag;
 }		t_vari;
 
-extern	t_vari	g_vari;
+extern t_vari	g_vari;
 
 t_list	*make_env(char **envp);
+t_list	*make_list(void);
 t_root	*make_cmd_node(t_root *start, t_list *env);
 t_root	*make_root(int root_in, int root_out, t_list *env);
+
+void	split_free(char **split);
+void	reset_root(t_root *start);
+void	error_stdin(char *str, int check);
+void	write_error(char *str);
+
 void	change_space(char *s);
 void	change_pipe(char *s);
+char	*change_quote(char *str, t_list *env);
+
 void	make_redirection(char *str, t_root	*root, char **cut, int *index);
-int		check_redirection(char *str);
 void	make_node(char *split, t_root *start, t_list *env);
 void	exe_cmd(t_root *start, t_list *env);
 int		do_redirection(t_root *top);
-char	*change_quote(char *str, t_list *env);
-char	*check_env_vari(char *str, t_list *env);
-void	error_stdin(char *str, int check);
-void	split_free(char **split);
+void	set_process_fd(t_root *top, int *fd);
 
+char	*check_env_vari(char *str, t_list *env);
+int		check_redirection(char *str);
 void	pid_check(t_root *start);
 int		check_whitespace(char *str);
 int		check_pipe_close(char *str);
-void	set_process_fd(t_root *top, int *fd);
 int		check_redirection_close(char *str, char **split, char *temp);
 int		check_quote(char *str, char **split, char *temp);
 int		access_check(char *path);
 int		pipe_check(t_root *top);
+int		pipe_heredoc_check(t_root *top);
 int		check_slash(char *str);
+
 char	**make_command(t_node *node, t_root *top);
 
+void	export_process(t_root *top, t_list *env);
+void	exit_process(t_root *top);
 void	echo_process(t_root *top);
 void	pwd_process(t_root *top);
 void	env_process(t_root *top, t_list *env);

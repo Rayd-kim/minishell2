@@ -28,11 +28,15 @@ FILE = main.c \
 		exe_cmd.c \
 		do_redirection.c \
 		error.c \
-		simple_check.c \
-		builtin_1.c \
-		builtin_2.c \
+		check_1.c \
+		check_2.c \
+		bt_echo_and_pwd.c \
+		bt_env_and_unset.c \
+		bt_exit.c \
+		bt_export.c \
 		signal.c \
-		do_execve.c
+		do_execve.c \
+		reset.c
 
 OBJS = $(FILE:.c=.o)
 

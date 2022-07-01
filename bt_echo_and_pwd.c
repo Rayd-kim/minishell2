@@ -1,10 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bt_echo_and_pwd.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/01 16:51:07 by youskim           #+#    #+#             */
+/*   Updated: 2022/07/01 16:51:08 by youskim          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int check_n(char **args)
+int	check_n(char **args)
 {
+	int	i;
+
 	if (args[1][0] == '-')
 	{
-		int i = 1;
+		i = 1;
 		while (args[1][i])
 		{
 			if (args[1][i] == 'n')
@@ -30,7 +44,7 @@ void	bt_echo(char **args, t_root *top)
 	if (!check_n(args))
 		opt = 2;
 	else
-		opt = 1;	
+		opt = 1;
 	args += opt;
 	while (*args != NULL)
 	{
@@ -59,20 +73,15 @@ void	echo_process(t_root *top)
 		exit(0);
 	}
 	if (pipe_check(top) == 0)
-	{
 		top->right->in_fd = fd[0];
-		if (top->in_fd != 0)
-			close (top->in_fd);
-		close (fd[1]);
-	}
 	if (top->in_fd != 0)
 		close (top->in_fd);
 	close (fd[1]);
 }
 
-int bt_pwd(t_root *top)
+int	bt_pwd(t_root *top)
 {
-    char    *path;
+	char	*path;
 
 	path = getcwd(NULL, 0);
 	if (path == NULL)
@@ -95,12 +104,7 @@ void	pwd_process(t_root *top)
 		exit(0);
 	}
 	if (pipe_check(top) == 0)
-	{
 		top->right->in_fd = fd[0];
-		if (top->in_fd != 0)
-			close (top->in_fd);
-		close (fd[1]);
-	}
 	if (top->in_fd != 0)
 		close (top->in_fd);
 	close (fd[1]);

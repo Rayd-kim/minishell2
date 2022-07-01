@@ -14,51 +14,6 @@
 
 t_vari	g_vari;
 
-void	free_left(t_node *top)
-{
-	t_node	*node;
-	t_node	*free_node;
-
-	node = top;
-	if (node->right != NULL)
-	{
-		free (node->right->cmd);
-		free (node->right->arg);
-		free (node->right);
-	}
-	free_node = node;
-	node = node->left;
-	free (free_node);
-	while (node != NULL)
-	{
-		free (node->cmd);
-		free (node->arg);
-		free_node = node;
-		node = node->left;
-		free (free_node);
-	}
-}
-
-void	reset_root(t_root *start)
-{
-	t_root	*root;
-	t_root	*free_root;
-
-	root = start;
-	while (root != NULL)
-	{
-		if (root->left != NULL)
-			free_left (root->left);
-		if (root->in_fd != 0)
-			close (root->in_fd);
-		if (root->out_fd != 1)
-			close (root->out_fd);
-		free_root = root;
-		root = root->right;
-		free (free_root);
-	}
-}
-
 void	pid_check(t_root *start)
 {
 	pid_t	now_pid;
@@ -108,7 +63,10 @@ int	show_prompt(t_root *start, t_list *env)
 		free (temp);
 	}
 	else if (temp != NULL && check_whitespace(temp) != 0)
-			free(temp);
+	{
+		free(temp);
+		return (1);
+	}
 	else if (temp == NULL)
 	{
 		printf("\x1b[1A\033[12C exit\n");
