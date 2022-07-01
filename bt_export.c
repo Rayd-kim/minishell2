@@ -16,6 +16,8 @@ int	check_dup(char *args, t_list *env_list)
 
 	tmp = env_list;
 	ptr = ft_strchr(args, '=');
+	if (ptr == NULL)
+		return (0);
 	idx = (ptr - args);
 	while (tmp && ptr)
 	{
@@ -67,11 +69,9 @@ int	check_alpha(char *args)
 {
 	int	i;
 	int	flag;
-	int equal;
 
 	i = 0;
 	flag = 1;
-	equal = 1;	
 	flag = check_valid(args, i, flag);
 	if (flag)
 		return (EXIT_FAILURE);
@@ -143,7 +143,6 @@ void	export_process_no_arg(t_root *top, t_list *env)
 {
 	int		fd[2];
 	char	**command;
-	int		ret;
 
 	pipe(fd);
 	top->pid = fork();
@@ -151,7 +150,7 @@ void	export_process_no_arg(t_root *top, t_list *env)
 	{
 		set_process_fd(top, fd);
 		command = make_command(top->left, top);
-		ret = bt_export(command, env);
+		bt_export(command, env);
 		split_free (command);
 		exit(0);
 	}

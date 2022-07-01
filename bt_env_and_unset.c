@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bt_env_and_unset.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*   By: ilim <ilim@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 16:54:11 by youskim           #+#    #+#             */
-/*   Updated: 2022/07/01 16:54:12 by youskim          ###   ########.fr       */
+/*   Updated: 2022/07/02 06:16:29 by ilim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,13 @@ void	env_process(t_root *top, t_list *env)
 	if (top->pid == 0)
 	{
 		set_process_fd(top, fd);
+		if (top->left->right->arg)
+		{
+			ft_putstr_fd("env: ", STDERR_FILENO);
+			ft_putstr_fd(top->left->right->arg, STDERR_FILENO);
+			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+			exit(0);
+		}	
 		prt_env(env);
 		exit(0);
 	}
@@ -83,7 +90,7 @@ void	bt_unset(char *args, t_list *env_list)
 		return ;
 	while (args[i] != '\0')
 	{
-		if (!ft_isalpha(*args))
+		if (!ft_isalpha(*args) || ft_strchr(args, '='))
 		{
 			ft_putstr_fd("unset: `", STDERR_FILENO);
 			ft_putstr_fd(args, STDERR_FILENO);
@@ -107,7 +114,7 @@ void	unset_process(t_root *top, t_list *env)
 
 	pipe(fd);
 	if (top->left->right->arg != NULL)
-		bt_unset(top->left->right->arg, env);
+		bt_unset(top->left->right->arg, env);	
 	if (pipe_check(top) == 0)
 		top->right->in_fd = fd[0];
 	else
