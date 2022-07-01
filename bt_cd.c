@@ -14,11 +14,32 @@ char	*check_home(t_list *env)
 	return (NULL);
 }
 
+void set_pwd(t_list* env, char* oldpwd, char* pwd)
+{
+    while (env)
+    {
+		if (ft_strncmp("OLDPWD=", env->str, 7))
+		{
+			free(env->str);
+			env->str = ft_strjoin("OLDPWD=", oldpwd);
+		}
+		if (ft_strncmp("PWD=", env->str, 4))
+		{
+			free(env->str);
+			env->str = ft_strjoin("PWD=", pwd);
+		}
+		env = env->next;
+    }
+}
+
 void	bt_cd(char **arg, t_list *env)
 {
 	char	*home;
+	char	*oldpwd;
+	char	*pwd;
 
-	if (arg[1] == NULL)
+	oldpwd = getcwd(NULL, 0);
+	if (arg[1] == NULL || !ft_strncmp(arg[1], "~", 2))
 	{
 		home = check_home(env);
 		if (chdir(home + 1))
@@ -32,6 +53,8 @@ void	bt_cd(char **arg, t_list *env)
 		printf("%s\n", strerror(errno));
 		g_vari.status = errno - 1;
 	}
+	pwd = getcwd(NULL, 0);
+	set_pwd(env, oldpwd, pwd);
 }
 
 void	cd_process(t_root *top)
