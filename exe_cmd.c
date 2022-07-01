@@ -67,7 +67,8 @@ int	check_builtin(char *str, t_root *top, t_list *env)
 {
 	if (ft_strncmp(str, "echo", ft_strlen (str)) == 0 && ft_strncmp(str, "echo", 4) == 0)
 		echo_process(top);
-	// else if (ft_strncmp(str, "cd", ft_strlen (str)) == 0)
+	else if (ft_strncmp(str, "cd", ft_strlen (str)) == 0 && ft_strncmp(str, "cd", 2) == 0)
+		cd_process(top);
 	else if (ft_strncmp(str, "env", ft_strlen (str)) == 0 && ft_strncmp(str, "env", 3) == 0)
 		env_process(top, env);
 	else if (ft_strncmp(str, "unset", ft_strlen (str)) == 0 && ft_strncmp(str, "unset", 5) == 0)

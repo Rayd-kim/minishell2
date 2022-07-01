@@ -34,6 +34,7 @@ FILE = main.c \
 		bt_env_and_unset.c \
 		bt_exit.c \
 		bt_export.c \
+		bt_cd.c \
 		signal.c \
 		do_execve.c \
 		reset.c

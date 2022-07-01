@@ -101,6 +101,8 @@ void	echo_process(t_root *top);
 void	pwd_process(t_root *top);
 void	env_process(t_root *top, t_list *env);
 void	unset_process(t_root *top, t_list *env);
+void	cd_process(t_root *top);
+
 void	do_execve(char *path, t_root *top);
 void	do_execve_null(t_root *top);
 

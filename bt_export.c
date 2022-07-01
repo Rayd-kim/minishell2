@@ -1,87 +1,5 @@
 #include "minishell.h"
 
-int find_index(char* str)
-{
-    int i;
-    int flag;
-
-    flag = 0;
-    i = 0;
-    while (str[i])
-    {
-        if (str[i] == '=')
-        {
-            flag = 1;
-            break;
-        }
-        i++;
-    }
-    if (flag == 0)
-        return 0;
-    else
-        return i;    
-}
-
-char* custom_strjoin(char* str1, char* str2)
-{
-	int i;
-	int j;
-	int a;
-	int b; 
-
-	i = 0;
-	j = 0;
-	a = ft_strlen(str1);
-	b = ft_strlen(str2);
-	char* arr = malloc(sizeof(char) * (a + b + 1));
-	while (str1[i])
-	{
-        arr[i] = str1[i];
-        i++;
-    }	
-	while (str2[j])
-    {
-        arr[i] = str2[j];
-        i++;
-        j++;
-    }
-	arr[i] = '\0';
-    free(str1);
-    free(str2);
-	return arr;
-}
-
-char* custom_split(char* str, int idx)
-{
-    int i;
-    int j;
-    int len;
-
-    len = ft_strlen(str);
-    char* arr1 = malloc(sizeof(char) * (idx + 2));
-    char* arr2 = malloc(sizeof(char) * (len - idx));
-    i = 0;
-    j = 0;
-    while (i < idx)
-    {
-        arr1[i] = str[i];
-        i++;
-    }
-    arr1[i] = '\"';
-    if (len - idx == 0)
-    {
-        arr1[i + 1] = '\"';
-        arr1[i + 2] = '\0'; 
-        return arr1;
-    }
-    arr1[i + 1] = '\0';
-    while (str[i])
-        arr2[j++] = str[i++];
-    arr2[j] = '\"';
-    arr2[j + 1] = '\0';
-    return (custom_strjoin(arr1, arr2));
-}
-
 void prt_export_msg(char *args)
 {
     ft_putstr_fd("export: `", STDERR_FILENO);
@@ -99,7 +17,7 @@ int	check_dup(char *args, t_list *env_list)
 	tmp = env_list;
 	ptr = ft_strchr(args, '=');
 	idx = (ptr - args);
-	while (tmp->next && ptr)
+	while (tmp && ptr)
 	{
 		i = 0;
 		while (args[i] == tmp->str[i])
@@ -108,18 +26,13 @@ int	check_dup(char *args, t_list *env_list)
 			{
 				free(tmp->str);
 				tmp->str = ft_strdup(args);
-				return (1);
+				return (0);
 			}
 			i++;
 		}
 		tmp = tmp->next;
 	}
-	if (ptr != NULL)
-	{
-		tmp->next = make_list();
-		tmp->next->str = ft_strdup(args);
-	}
-	return (EXIT_SUCCESS);
+	return (1);
 }
 
 int	check_valid(char *args, int i, int flag)
@@ -168,17 +81,37 @@ int	check_alpha(char *args)
 
 void	null_args(t_list *env_list)
 {
-	char	*str;
 	int		i;
 
 	while (env_list)
 	{
-		i = find_index(env_list->str);
-		str = custom_split(env_list->str, i + 1);
-		printf("declare -x %s\n", str);
-		free(str);
+		i = 0;
+		printf("declare -x ");
+		while (env_list->str[i])
+		{
+			printf("%c", env_list->str[i]);
+			if (env_list->str[i] == '=')
+				break;
+			i++;			
+		}
+		i++;
+		printf("%c", '\"');
+		while (env_list->str[i])
+			printf("%c", env_list->str[i++]);
+		printf("%c\n", '\"');
 		env_list = env_list->next;
 	}
+}
+
+void	add_env(char *args, t_list *env_list)
+{
+	t_list	*temp;
+
+	temp = env_list;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = make_list();
+	temp->next->str = ft_strdup(args);
 }
 
 int	bt_export(char **args, t_list *env_list)
@@ -199,8 +132,9 @@ int	bt_export(char **args, t_list *env_list)
 	i = 1;
 	while (args[i] != NULL)
 	{
-		if (check_dup(args[i++], env_list))
-			return (EXIT_FAILURE);
+		if (check_dup(args[i], env_list))
+			add_env(args[i], env_list);
+		i++;
 	}
 	return (0);
 }
