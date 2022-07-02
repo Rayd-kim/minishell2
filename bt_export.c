@@ -66,7 +66,7 @@ int	check_valid(char *args, int i, int flag)
 	return (flag);
 }
 
-int	check_alpha(char *args)
+int	check_alpha(char *args, int *ret)
 {
 	int	i;
 	int	flag;
@@ -75,7 +75,10 @@ int	check_alpha(char *args)
 	flag = 0;
 	flag = check_valid(args, i, flag);
 	if (flag)
+	{
+		*ret = 1;
 		return (EXIT_FAILURE);
+	}
 	else
 		return (EXIT_SUCCESS);
 }
@@ -118,9 +121,9 @@ void	add_env(char *args, t_list *env_list)
 int	bt_export(char **args, t_list *env_list)
 {
 	int	i;
-	int flag;
+	int ret;
 
-	flag = 0;
+	ret = 0;
 	i = 1;
 	if (args[1] == NULL)
 	{
@@ -129,17 +132,14 @@ int	bt_export(char **args, t_list *env_list)
 	}
 	while (args[i] != NULL)
 	{
-		if (!check_alpha(args[i]))
+		if (!check_alpha(args[i], &ret))
 		{
 			if (check_dup(args[i], env_list))
 				add_env(args[i], env_list);
-			flag = 1;
 		}
 		i++;
 	}
-	if (flag)
-		return (0);
-	return (0);
+	return (ret);
 }
 
 void	export_process_no_arg(t_root *top, t_list *env)
