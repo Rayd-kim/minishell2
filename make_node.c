@@ -15,60 +15,64 @@
 void	make_cmd(char *cut, t_node *start, t_list *env)
 {
 	t_node	*cmd;
+	int		i;
 	char	*str;
 
-	cmd = (t_node *)malloc(sizeof(t_node));
-	if (cmd == 0)
-		exit (1);
-	ft_memset (cmd, 0, sizeof(t_node));
+	i = 0;
+	cmd = start->right;
 	str = change_quote(cut, env);
-	cmd->cmd = ft_strdup(str);
-	start->right = cmd;
-	if (str != cut)
-		free(str);
-}
-
-void	make_arg(char *cut, t_node *start, t_list *env, t_root *root)
-{
-	char	*temp_free;
-	char	*str;
-
-	str = change_quote(cut, env);
-	if (start->right->arg == NULL)
-		start->right->arg = ft_strdup(str);
+	if (cmd->cmd == NULL)
+	{
+		cmd->cmd = ft_strdup(str);
+		cmd->arg[0] = ft_strdup(str);
+	}
 	else
 	{
-		temp_free = start->right->arg;
-		start->right->arg = ft_strjoin (start->right->arg, root->bond);
-		free (temp_free);
-		temp_free = start->right->arg;
-		start->right->arg = ft_strjoin (start->right->arg, str);
-		free (temp_free);
+		while (cmd->arg[i] != NULL)
+			i++;
+		cmd->arg[i] = ft_strdup(str);
 	}
 	if (str != cut)
-		free(str);
+		free (str);
+}
+
+void	set_cmd_arg(char **cut, t_node *node)
+{
+	int		i;
+	int		len;
+
+	i = 0;
+	len = 0;
+	while (cut[i])
+	{
+		if (check_redirection(cut[i]) == 0)
+			len++;
+		i++;
+	}
+	node->right = (t_node *)malloc(sizeof(t_node));
+	if (node->right == 0)
+		exit(1);
+	ft_memset(node->right, 0, sizeof(t_node));
+	node->right->arg = (char **)malloc(sizeof(char *) * (len + 1));
+	if (node->right->arg == 0)
+		exit (1);
+	ft_memset(node->right->arg, 0, sizeof(char *) * (len + 1));
 }
 
 void	make_node(char *split, t_root *start, t_list *env)
 {
 	char	**cut;
-	int		cmd;
 	int		i;
 
-	cmd = 0;
 	cut = ft_split(split, (char)255);
 	i = 0;
+	set_cmd_arg(cut, start->left);
 	while (cut[i] != NULL)
 	{
 		if (check_redirection(cut[i]) != 0)
 			make_redirection (cut[i], start, cut, &i);
-		else if (cmd == 0)
-		{
-			make_cmd(cut[i], start->left, env);
-			cmd++;
-		}
 		else
-			make_arg(cut[i], start->left, env, start);
+			make_cmd (cut[i], start->left, env);
 		i++;
 	}
 	split_free (cut);
@@ -84,7 +88,6 @@ t_root	*make_root(int root_in, int root_out, t_list *env)
 	ft_memset (ret, 0, sizeof(t_root));
 	ret->in_fd = root_in;
 	ret->out_fd = root_out;
-	ret->bond[0] = (char)255;
 	ret->env = env;
 	return (ret);
 }

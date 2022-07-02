@@ -57,18 +57,3 @@ int	access_check(char *path)
 		return (1);
 	}
 }
-
-char	**make_command(t_node *node, t_root *top)
-{
-	char	**command;
-	char	*temp;
-	char	*free_temp;
-
-	temp = ft_strjoin(node->right->cmd, top->bond);
-	free_temp = temp;
-	temp = ft_strjoin(free_temp, node->right->arg);
-	free(free_temp);
-	command = ft_split(temp, (char)255);
-	free(temp);
-	return (command);
-}

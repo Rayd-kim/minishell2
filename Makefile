@@ -24,6 +24,7 @@ FILE = main.c \
 		make_node.c \
 		make_redirect.c \
 		change_input.c \
+		change_quote.c \
 		env_change_1.c \
 		env_change_2.c \
 		make_env.c \
@@ -37,7 +38,8 @@ FILE = main.c \
 		bt_echo_and_pwd.c \
 		bt_env_and_unset.c \
 		bt_exit.c \
-		bt_export.c \
+		bt_export_1.c \
+		bt_export_2.c \
 		bt_cd.c \
 		signal.c \
 		do_execve.c \

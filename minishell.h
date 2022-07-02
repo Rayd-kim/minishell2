@@ -31,7 +31,8 @@
 
 typedef struct s_node {
 	char			*cmd;
-	char			*arg;
+	char			**arg;
+	char			*redi;
 	struct s_node	*left;
 	struct s_node	*right;
 }		t_node;
@@ -44,7 +45,6 @@ typedef struct s_list {
 typedef struct s_root {
 	int				in_fd;
 	int				out_fd;
-	char			bond[2];
 	int				here_doc;
 	pid_t			pid;
 	struct s_list	*env;
@@ -102,8 +102,6 @@ int		pipe_check(t_root *top);
 int		pipe_heredoc_check(t_root *top);
 int		check_slash(char *str);
 
-char	**make_command(t_node *node, t_root *top);
-
 void	export_process(t_root *top, t_list *env);
 void	exit_process(t_root *top);
 void	echo_process(t_root *top);
@@ -114,6 +112,10 @@ void	cd_process(t_root *top);
 
 void	do_execve(char *path, t_root *top);
 void	do_execve_null(t_root *top);
+
+void	null_args(t_list *env_list);
+int		check_alpha(char *args, int *ret);
+int		check_dup(char *args, t_list *env_list);
 
 void	set_signal(void);
 #endif

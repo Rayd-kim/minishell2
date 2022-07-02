@@ -47,7 +47,9 @@ void	do_cmd(t_root *top, t_list *env)
 	list = env;
 	while (list != NULL && top->left->right != NULL)
 	{
-		if (check_builtin(top->left->right->cmd, top, env) == 0)
+		if (top->left->right->cmd == NULL)
+			return ;
+		else if (check_builtin(top->left->right->cmd, top, env) == 0)
 			return ;
 		else if (ft_strncmp(list->str, "PATH=", 5) == 0)
 		{

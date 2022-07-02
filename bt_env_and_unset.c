@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bt_env_and_unset.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*   By: ilim <ilim@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 16:54:11 by youskim           #+#    #+#             */
-/*   Updated: 2022/07/01 16:54:12 by youskim          ###   ########.fr       */
+/*   Updated: 2022/07/02 16:01:00 by ilim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	delete_env(t_list *env_list, char *args)
 void	bt_unset(char **args, t_list *env_list)
 {
 	int	i;
-	int flag;
+	int	flag;
 
 	flag = 0;
 	i = 0;
@@ -96,7 +96,7 @@ void	bt_unset(char **args, t_list *env_list)
 		else
 		{
 			delete_env(env_list, args[i]);
-			if (flag != 1)				
+			if (flag != 1)
 				g_vari.status = 0;
 		}
 	}
@@ -105,13 +105,10 @@ void	bt_unset(char **args, t_list *env_list)
 void	unset_process(t_root *top, t_list *env)
 {
 	int		fd[2];
-	char	**command;
 
-	command = make_command(top->left, top);
 	pipe(fd);
 	if (top->left->right->arg != NULL)
-		bt_unset(command, env);	
-	split_free(command);
+		bt_unset(top->left->right->arg, env);
 	if (pipe_check(top) == 0)
 		top->right->in_fd = fd[0];
 	else

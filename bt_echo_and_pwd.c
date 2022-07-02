@@ -59,7 +59,6 @@ void	bt_echo(char **args, t_root *top)
 
 void	echo_process(t_root *top)
 {
-	char	**command;
 	int		fd[2];
 
 	pipe(fd);
@@ -67,9 +66,7 @@ void	echo_process(t_root *top)
 	if (top->pid == 0)
 	{
 		set_process_fd(top, fd);
-		command = make_command(top->left, top);
-		bt_echo(command, top);
-		free (command);
+		bt_echo(top->left->right->arg, top);
 		exit(0);
 	}
 	if (pipe_check(top) == 0)

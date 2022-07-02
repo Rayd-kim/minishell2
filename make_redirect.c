@@ -117,6 +117,6 @@ void	make_redirection(char *str, t_root	*root, char **cut, int *index)
 	while (temp->left != NULL)
 		temp = temp->left;
 	redirect->cmd = cmd_redirection (str);
-	redirect->arg = arg_redirection (str, cut, index, root);
+	redirect->redi = arg_redirection (str, cut, index, root);
 	temp->left = redirect;
 }

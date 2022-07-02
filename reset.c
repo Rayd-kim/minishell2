@@ -21,7 +21,7 @@ void	free_left(t_node *top)
 	if (node->right != NULL)
 	{
 		free (node->right->cmd);
-		free (node->right->arg);
+		split_free (node->right->arg);
 		free (node->right);
 	}
 	free_node = node;
@@ -30,7 +30,7 @@ void	free_left(t_node *top)
 	while (node != NULL)
 	{
 		free (node->cmd);
-		free (node->arg);
+		free (node->redi);
 		free_node = node;
 		node = node->left;
 		free (free_node);

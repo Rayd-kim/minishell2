@@ -88,7 +88,7 @@ int	do_heredoc_first(t_root *root)
 		{
 			if (ft_strncmp (node->cmd, "<<", 2) == 0)
 			{
-				top->in_fd = check_heredoc(node->arg, top);
+				top->in_fd = check_heredoc(node->redi, top);
 				if (top->in_fd < 0)
 					return (1);
 				top->here_doc = 1;
@@ -114,13 +114,13 @@ int	do_redirection(t_root *top)
 	while (temp != NULL)
 	{
 		if (ft_strncmp (temp->cmd, ">>", 3) == 0)
-			set_redirection(top, open_redirection(temp->arg, 2), 1, &check);
+			set_redirection(top, open_redirection(temp->redi, 2), 1, &check);
 		else if (ft_strncmp (temp->cmd, "<", 2) == 0)
-			set_redirection(top, open_file (temp->arg), 0, &check);
+			set_redirection(top, open_file (temp->redi), 0, &check);
 		else if (ft_strncmp (temp->cmd, "<<", 3) == 0)
 			set_redirection(top, top->here_doc, 0, &check);
 		else if (ft_strncmp (temp->cmd, ">", 2) == 0)
-			set_redirection(top, open_redirection(temp->arg, 1), 1, &check);
+			set_redirection(top, open_redirection(temp->redi, 1), 1, &check);
 		if (check != 0)
 			return (1);
 		temp = temp->left;

@@ -107,7 +107,6 @@ int	bt_exit(char **args, int *end_check)
 void	exit_process(t_root *top)
 {
 	int		fd[2];
-	char	**command;
 	int		end_check;
 	int		end_value;
 
@@ -115,9 +114,7 @@ void	exit_process(t_root *top)
 	pipe(fd);
 	if (top->in_fd == 0 && top->right == NULL)
 		printf("exit\n");
-	command = make_command(top->left, top);
-	end_value = bt_exit(command, &end_check);
-	split_free (command);
+	end_value = bt_exit(top->left->right->arg, &end_check);
 	if (pipe_check(top) == 0)
 		top->right->in_fd = fd[0];
 	else

@@ -88,12 +88,9 @@ void	bt_cd(char **arg, t_list *env, t_root *top)
 void	cd_process(t_root *top)
 {
 	int		fd[2];
-	char	**command;
 
 	pipe(fd);
-	command = make_command(top->left, top);
-	bt_cd(command, top->env, top);
-	split_free (command);
+	bt_cd(top->left->right->arg, top->env, top);
 	if (pipe_check(top) == 0)
 		top->right->in_fd = fd[0];
 	else

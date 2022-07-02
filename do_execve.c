@@ -57,7 +57,6 @@ char	**make_exe_env(t_list *env)
 
 void	do_execve(char *path, t_root *top)
 {
-	char	**command;
 	int		fd[2];
 
 	pipe(fd);
@@ -65,8 +64,7 @@ void	do_execve(char *path, t_root *top)
 	if (top->pid == 0)
 	{
 		set_process_fd(top, fd);
-		command = make_command(top->left, top);
-		if (execve(path, command, make_exe_env(top->env)) == -1)
+		if (execve(path, top->left->right->arg, make_exe_env(top->env)) == -1)
 			error_stdin (path, check_slash(top->left->right->cmd));
 	}
 	if (pipe_check(top) == 0)
