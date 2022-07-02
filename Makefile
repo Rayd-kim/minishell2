@@ -24,6 +24,8 @@ FILE = main.c \
 		make_node.c \
 		make_redirect.c \
 		change_input.c \
+		env_change_1.c \
+		env_change_2.c \
 		make_env.c \
 		exe_cmd_1.c \
 		exe_cmd_2.c \

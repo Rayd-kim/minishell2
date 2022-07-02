@@ -73,10 +73,17 @@ void	change_space(char *s);
 void	change_pipe(char *s);
 char	*change_quote(char *str, t_list *env);
 
+int		path_len(char *str);
+int		env_len(char *path);
+char	*check_env_vari(char *str, t_list *env);
+char	*check_env(char *str, t_list *env);
+
 void	make_redirection(char *str, t_root	*root, char **cut, int *index);
 void	make_node(char *split, t_root *start, t_list *env);
+
 void	exe_cmd(t_root *start, t_list *env);
 void	check_cmd(char *str, t_root *top);
+
 int		open_redirection(char *file_name, int check);
 int		open_file(char *file);
 int		do_redirection(t_root *top);
