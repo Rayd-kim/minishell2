@@ -6,7 +6,7 @@
 /*   By: ilim <ilim@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 16:54:11 by youskim           #+#    #+#             */
-/*   Updated: 2022/07/02 06:16:29 by ilim             ###   ########.fr       */
+/*   Updated: 2022/07/02 14:48:59 by ilim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,6 @@ void	env_process(t_root *top, t_list *env)
 	if (top->pid == 0)
 	{
 		set_process_fd(top, fd);
-		if (top->left->right->arg)
-		{
-			ft_putstr_fd("env: ", STDERR_FILENO);
-			ft_putstr_fd(top->left->right->arg, STDERR_FILENO);
-			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-			exit(0);
-		}	
 		prt_env(env);
 		exit(0);
 	}
@@ -81,40 +74,43 @@ void	delete_env(t_list *env_list, char *args)
 	free(temp);
 }
 
-void	bt_unset(char *args, t_list *env_list)
+void	bt_unset(char **args, t_list *env_list)
 {
 	int	i;
+	int flag;
 
+	flag = 0;
 	i = 0;
-	if (args[i] == '\0')
+	if (args[i] == NULL)
 		return ;
-	while (args[i] != '\0')
+	while (args[++i] != NULL)
 	{
-		if (!ft_isalpha(*args) || ft_strchr(args, '='))
+		if (!ft_isalpha(args[i][0]) || ft_strchr(args[i], '='))
 		{
 			ft_putstr_fd("unset: `", STDERR_FILENO);
-			ft_putstr_fd(args, STDERR_FILENO);
+			ft_putstr_fd(args[i], STDERR_FILENO);
 			ft_putendl_fd("':  not a valid identifier", STDERR_FILENO);
+			flag = 1;
 			g_vari.status = 1;
-			return ;
 		}
 		else
 		{
-			delete_env(env_list, args);
-			g_vari.status = 0;
-			return ;
+			delete_env(env_list, args[i]);
+			if (flag != 1)				
+				g_vari.status = 0;
 		}
-		i++;
 	}
 }
 
 void	unset_process(t_root *top, t_list *env)
 {
 	int		fd[2];
+	char	**command;
 
+	command = make_command(top->left, top);
 	pipe(fd);
 	if (top->left->right->arg != NULL)
-		bt_unset(top->left->right->arg, env);	
+		bt_unset(command, env);	
 	if (pipe_check(top) == 0)
 		top->right->in_fd = fd[0];
 	else

@@ -44,22 +44,23 @@ int	check_valid(char *args, int i, int flag)
 		if (ft_isalpha(args[0]) && args[i] != '\0')
 		{
 			if ((args[i] >= 48 && args[i] <= 57) || ft_isalpha(args[i]))
-				flag = 0;
+				;
 			else if (args[i] == '=')
 			{
 				if (args[i + 1] == '\0' || i == 0)
 				{
 					i++;
-					flag = 0;
 					continue ;
 				}
 			}
 		}
+		else
+			flag = 1;
 		if (flag)
 		{
 			prt_export_msg(args);
-			break ;
-		}
+			break;
+		}	
 		i++;
 	}
 	return (flag);
@@ -71,7 +72,7 @@ int	check_alpha(char *args)
 	int	flag;
 
 	i = 0;
-	flag = 1;
+	flag = 0;
 	flag = check_valid(args, i, flag);
 	if (flag)
 		return (EXIT_FAILURE);
@@ -117,7 +118,9 @@ void	add_env(char *args, t_list *env_list)
 int	bt_export(char **args, t_list *env_list)
 {
 	int	i;
+	int flag;
 
+	flag = 0;
 	i = 1;
 	if (args[1] == NULL)
 	{
@@ -126,16 +129,16 @@ int	bt_export(char **args, t_list *env_list)
 	}
 	while (args[i] != NULL)
 	{
-		if (check_alpha(args[i++]))
-			return (1);
-	}
-	i = 1;
-	while (args[i] != NULL)
-	{
-		if (check_dup(args[i], env_list))
-			add_env(args[i], env_list);
+		if (!check_alpha(args[i]))
+		{
+			if (check_dup(args[i], env_list))
+				add_env(args[i], env_list);
+			flag = 1;
+		}
 		i++;
 	}
+	if (flag)
+		return (0);
 	return (0);
 }
 
