@@ -29,8 +29,6 @@
 # define CTRL_C SIGINT
 # define CTRL_SLASH SIGQUIT
 
-// extern int g_status;
-
 typedef struct s_node {
 	char			*cmd;
 	char			*arg;
@@ -78,7 +76,11 @@ char	*change_quote(char *str, t_list *env);
 void	make_redirection(char *str, t_root	*root, char **cut, int *index);
 void	make_node(char *split, t_root *start, t_list *env);
 void	exe_cmd(t_root *start, t_list *env);
+void	check_cmd(char *str, t_root *top);
+int		open_redirection(char *file_name, int check);
+int		open_file(char *file);
 int		do_redirection(t_root *top);
+int		do_heredoc_first(t_root *top);
 void	set_process_fd(t_root *top, int *fd);
 
 char	*check_env_vari(char *str, t_list *env);
@@ -107,5 +109,4 @@ void	do_execve(char *path, t_root *top);
 void	do_execve_null(t_root *top);
 
 void	set_signal(void);
-int		do_heredoc_first(t_root *top);
 #endif

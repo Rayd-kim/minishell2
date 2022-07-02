@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bt_env_and_unset.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilim <ilim@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 16:54:11 by youskim           #+#    #+#             */
-/*   Updated: 2022/07/02 14:48:59 by ilim             ###   ########.fr       */
+/*   Updated: 2022/07/01 16:54:12 by youskim          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ void	unset_process(t_root *top, t_list *env)
 	pipe(fd);
 	if (top->left->right->arg != NULL)
 		bt_unset(command, env);	
+	split_free(command);
 	if (pipe_check(top) == 0)
 		top->right->in_fd = fd[0];
 	else

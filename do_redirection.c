@@ -12,40 +12,28 @@
 
 #include "minishell.h"
 
-int	open_redirection(char *file_name, int check)
+void	read_heredoc(t_root *top, int fd)
 {
-	int	fd;
-	int	file_check;
+	int		len;
+	char	buffer[20];
 
-	if (check == 1)
+	len = read (top->in_fd, buffer, 20);
+	while (len != 0)
 	{
-		file_check = open (file_name, O_RDONLY);
-		if (file_check != -1)
-		{
-			close (file_check);
-			unlink (file_name);
-		}
-		fd = open (file_name, O_WRONLY | O_CREAT, 0644);
-		return (fd);
-	}
-	else
-	{
-		file_check = open (file_name, O_WRONLY | O_APPEND);
-		if (file_check != -1)
-			fd = file_check;
-		else
-			fd = open (file_name, O_WRONLY | O_CREAT, 0644);
-		return (fd);
+		write (fd, buffer, ft_strlen(buffer));
+		len = read (top->in_fd, buffer, 20);
 	}
 }
 
-int	check_heredoc(char *name)
+int	check_heredoc(char *name, t_root *top)
 {
 	char	*temp;
 	int		fd[2];
 
 	g_vari.flag = 1;
 	pipe(fd);
+	if (top->in_fd != 0)
+		read_heredoc(top, fd[1]);
 	temp = readline (">");
 	if (temp != NULL)
 	{
@@ -64,23 +52,6 @@ int	check_heredoc(char *name)
 		free (temp);
 	close (fd[1]);
 	return (fd[0]);
-}
-
-int	open_file(char *file)
-{
-	int	fd;
-
-	fd = open (file, O_RDONLY);
-	if (fd < 0)
-	{
-		write (2, "Minishell: ", 11);
-		write (2, file, ft_strlen(file));
-		write (2, ": ", 2);
-		write (2, strerror(errno), ft_strlen(strerror(errno)));
-		write (2, "\n", 1);
-		g_vari.status = errno - 1;
-	}
-	return (fd);
 }
 
 void	set_redirection(t_root *top, int fd, int in_or_out, int *check)
@@ -104,28 +75,29 @@ void	set_redirection(t_root *top, int fd, int in_or_out, int *check)
 	}
 }
 
-int	do_heredoc_first(t_root *top)
+int	do_heredoc_first(t_root *root)
 {
-	int		check;
-	t_root	*root;
+	t_root	*top;
 	t_node	*node;
 
-	root = top;
-	while (root != NULL)
+	top = root;
+	while (top != NULL)
 	{
-		node = root->left->left;
+		node = top->left->left;
 		while (node != NULL)
 		{
 			if (ft_strncmp (node->cmd, "<<", 2) == 0)
 			{
-				set_redirection(root, check_heredoc (node->arg), 0, &check);
-				root->here_doc++;
+				top->in_fd = check_heredoc(node->arg, top);
+				if (top->in_fd < 0)
+					return (1);
+				top->here_doc = 1;
 			}
-			if (check != 0 || g_vari.status == 130)
+			if (g_vari.status == 130)
 				return (1);
 			node = node->left;
 		}
-		root = root->right;
+		top = top->right;
 	}
 	return (0);
 }

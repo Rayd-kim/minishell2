@@ -25,8 +25,10 @@ FILE = main.c \
 		make_redirect.c \
 		change_input.c \
 		make_env.c \
-		exe_cmd.c \
+		exe_cmd_1.c \
+		exe_cmd_2.c \
 		do_redirection.c \
+		file_open.c \
 		error.c \
 		check_1.c \
 		check_2.c \

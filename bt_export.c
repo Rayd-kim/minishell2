@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bt_export.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/02 14:07:30 by youskim           #+#    #+#             */
+/*   Updated: 2022/07/02 14:07:31 by youskim          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void prt_export_msg(char *args)
@@ -146,6 +158,7 @@ void	export_process_no_arg(t_root *top, t_list *env)
 {
 	int		fd[2];
 	char	**command;
+	int		ret;
 
 	pipe(fd);
 	top->pid = fork();
@@ -153,7 +166,7 @@ void	export_process_no_arg(t_root *top, t_list *env)
 	{
 		set_process_fd(top, fd);
 		command = make_command(top->left, top);
-		bt_export(command, env);
+		ret = bt_export(command, env);
 		split_free (command);
 		exit(0);
 	}

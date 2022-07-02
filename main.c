@@ -34,33 +34,41 @@ void	pid_check(t_root *start)
 	}
 }
 
+int	do_minishell(t_root *start, t_list *env, char *temp)
+{
+	char	**split;
+	int		i;
+
+	add_history (temp);
+	if (check_pipe_close(temp) != 0)
+		return (1);
+	change_pipe (temp);
+	split = ft_split (temp, (char)254);
+	if (split == NULL)
+		exit (1);
+	i = -1;
+	while (split[++i] != NULL)
+	{
+		if (check_quote(split[i], split, temp) != 0 \
+			|| check_redirection_close(split[i], split, temp) != 0)
+			return (1);
+		change_space(split[i]);
+		make_node(split[i], make_cmd_node((start), env), env);
+	}
+	split_free (split);
+	free (temp);
+	return (0);
+}
+
 int	show_prompt(t_root *start, t_list *env)
 {
 	char	*temp;
-	char	**split;
-	int		i;
 
 	temp = readline("minishell >>");
 	if (temp != NULL && check_whitespace(temp) == 0)
 	{
-		add_history (temp);
-		if (check_pipe_close(temp) != 0)
+		if (do_minishell(start, env, temp) == 1)
 			return (1);
-		change_pipe (temp);
-		split = ft_split (temp, (char)254);
-		if (split == NULL)
-			exit (1);
-		i = -1;
-		while (split[++i] != NULL)
-		{
-			if (check_quote(split[i], split, temp) != 0 \
-				|| check_redirection_close(split[i], split, temp) != 0)
-				return (1);
-			change_space(split[i]);
-			make_node(split[i], make_cmd_node((start), env), env);
-		}
-		split_free (split);
-		free (temp);
 	}
 	else if (temp != NULL && check_whitespace(temp) != 0)
 	{

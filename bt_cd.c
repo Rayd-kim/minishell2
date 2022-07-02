@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bt_cd.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: youskim <youskim@student.42seoul.k>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/02 14:04:15 by youskim           #+#    #+#             */
+/*   Updated: 2022/07/02 14:04:16 by youskim          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*check_home(t_list *env)
@@ -14,13 +26,13 @@ char	*check_home(t_list *env)
 	return (NULL);
 }
 
-void set_pwd(t_list* env, char* oldpwd, char* pwd)
+void	set_pwd(t_list *env, char *oldpwd, char *pwd)
 {
 	t_list	*temp;
 
 	temp = env;
-    while (temp)
-    {
+	while (temp)
+	{
 		if (ft_strncmp("OLDPWD=", temp->str, 7) == 0)
 		{
 			free(temp->str);
@@ -32,7 +44,7 @@ void set_pwd(t_list* env, char* oldpwd, char* pwd)
 			temp->str = ft_strjoin("PWD=", pwd);
 		}
 		temp = temp->next;
-    }
+	}
 	free(oldpwd);
 	free(pwd);
 }
@@ -64,9 +76,9 @@ void	bt_cd(char **arg, t_list *env, t_root *top)
 		}
 		else if (top->in_fd == 0 && top->right == NULL)
 			if (chdir(home + 1))
-				write_cd_error(errno, home + 1);			
+				write_cd_error(errno, home + 1);
 	}
-	else if(top->in_fd == 0 && top->right == NULL)
+	else if (top->in_fd == 0 && top->right == NULL)
 		if (chdir(arg[1]))
 			write_cd_error(errno, arg[1]);
 	pwd = getcwd(NULL, 0);
@@ -89,5 +101,4 @@ void	cd_process(t_root *top)
 	if (top->in_fd != 0)
 		close (top->in_fd);
 	close (fd[1]);
-	// if (top->in_fd == 0 && top->right == NULL) // 이때만 실행 될수있게
 }
